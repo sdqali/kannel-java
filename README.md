@@ -11,9 +11,10 @@ Java libraries for building applications with the Kannel open source SMS gateway
 
 ## Dependencies: ##
 - <http://xmlbeans.apache.org/> - Apache XMLBeans for XML reading and writing.
+- <http://commons.apache.org/beanutils/> - Commons BeanUtils for bean property manipulation in 'conf'.
 - <http://www.junit.org/> - JUnit for unit tests.
 - <http://logging.apache.org/log4j/> - Log4J for logging.
-- <http://maven.apache.org/> - Maven is used to build the libraries. All dependencies, except Maven (and JMS) will be downloaded during build.
+- <http://maven.apache.org/> - Maven is used to build the libraries. All dependencies, except Maven itself will be downloaded during build.
 - <http://www.oracle.com/technetwork/java/index-jsp-142945.html> - JMS is used in the 'protocol' sample application. 
 - <http://www.oracle.com/technetwork/java/index-jsp-135475.html> - Java Servlets are used in some 'sms' samples.
 
