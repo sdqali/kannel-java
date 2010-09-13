@@ -1,0 +1,80 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified">
+
+  <xs:element name="gateway" type="gateway" />
+
+  <xs:complexType name="gateway">
+    <xs:all>
+      <xs:element name="version" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="status" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="wdp" type="stats" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="sms" type="stats" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="dlr" type="dlr" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="boxes" type="boxes" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="smscs" type="smscs" minOccurs="0" maxOccurs="1"/>
+    </xs:all>
+  </xs:complexType>
+
+  <xs:complexType name="stats">
+    <xs:all>
+      <xs:element name="received" type="count" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="sent" type="count" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="storesize" type="xs:int" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="inbound" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="outbound" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    </xs:all>
+  </xs:complexType>
+
+  <xs:complexType name="count">
+    <xs:all>
+      <xs:element name="total" type="xs:int" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="queued" type="xs:int" minOccurs="0" maxOccurs="1"/>
+    </xs:all>
+  </xs:complexType>
+
+  <xs:complexType name="dlr">
+    <xs:all>
+      <xs:element name="queued" type="xs:int" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="storage" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    </xs:all>
+  </xs:complexType>
+
+  <xs:complexType name="boxes">
+    <xs:all>
+      <xs:element name="box" type="box" minOccurs="0"/>
+    </xs:all>
+  </xs:complexType>
+
+  <xs:complexType name="box">
+    <xs:all>
+      <xs:element name="type" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="id" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="IP" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="queue" type="xs:int" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="status" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ssl" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    </xs:all>
+  </xs:complexType>
+
+  <xs:complexType name="smscs">
+    <xs:all>
+      <xs:element name="count" type="xs:int" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="smsc" type="smsc" minOccurs="0"/>
+    </xs:all>
+  </xs:complexType>
+
+  <xs:complexType name="smsc">
+    <xs:all>
+      <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="id" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="status" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="received" type="xs:int" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="sent" type="xs:int" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="failed" type="xs:int" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="queued" type="xs:int" minOccurs="0" maxOccurs="1"/>
+    </xs:all>
+  </xs:complexType>
+
+</xs:schema>

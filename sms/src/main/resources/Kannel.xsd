@@ -1,0 +1,70 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified">
+
+  <xs:element name="message" type="message" />
+
+  <xs:complexType name="message">
+    <xs:all>
+      <xs:element name="submit" type="submit" minOccurs="1" maxOccurs="1"/>
+    </xs:all>
+  </xs:complexType>
+
+  <xs:complexType name="submit">
+    <xs:all>
+      <xs:element name="da" type="address" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="oa" type="address" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="ud" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="udh" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="dcs" type="dcs" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="pid" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="rpi" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="vp" type="time" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="timing" type="time" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="statusrequest" type="statusrequest" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="from" type="from" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="to" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    </xs:all>
+  </xs:complexType>
+
+  <xs:complexType name="address">
+    <xs:all>
+      <xs:element name="number" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    </xs:all>
+  </xs:complexType>
+
+  <xs:complexType name="dcs">
+    <xs:all>
+      <xs:element name="mclass" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="coding" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="mwi" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="compress" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="alt-dcs" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    </xs:all>
+  </xs:complexType>
+
+  <xs:complexType name="time">
+    <xs:all>
+      <xs:element name="delay" type="xs:int" minOccurs="0" maxOccurs="1"/>
+    </xs:all>
+  </xs:complexType>
+
+  <xs:complexType name="statusrequest">
+    <xs:all>
+      <xs:element name="dlr-mask" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="dlr-url" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    </xs:all>
+  </xs:complexType>
+
+  <xs:complexType name="from">
+    <xs:all>
+      <xs:element name="user" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="username" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="pass" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="password" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="account" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    </xs:all>
+  </xs:complexType>
+
+</xs:schema>
