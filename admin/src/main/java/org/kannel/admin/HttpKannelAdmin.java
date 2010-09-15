@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * Implementation of KannelAdmin using Kannel's HTTP administration interface
@@ -15,7 +16,11 @@ import java.net.URL;
 public class HttpKannelAdmin
     implements KannelAdmin
 {
-    
+
+    /**
+     * @param baseUrl The base URL of the Kannel HTTP administration interface
+     * @param password The admin-password 
+     */    
     public HttpKannelAdmin(URL baseUrl, String password) {
 	this.baseUrl = baseUrl;
 	this.password = password;
@@ -40,14 +45,19 @@ public class HttpKannelAdmin
 
     /**
      * status
-     * Get the current status of the gateway in a text version. Tells the current state (see above) and total number of messages relied and queuing in the system right now. Also lists the total number of smsbox and wapbox connections. No password required, unless status-password set, in which case either that or main admin password must be supplied.
+     * Get the current status of the gateway in a text version. Tells the current state
+     * (see above) and total number of messages relied and queuing in the system right now.
+     * Also lists the total number of smsbox and wapbox connections. No password required,
+     * unless status-password set, in which case either that or main admin password must be
+     * supplied.
+     * @return A Status containing conveniences to access the XML.
      */
     public Status getStatus() throws AdminException
     {
 	try {
-	    InputStream is = getUrl("status", true).openStream();
-	    Status s = Status.parse(is);
-	    is.close();
+ 	    InputStream is = getUrl("status.xml", true).openStream();
+ 	    Status s = Status.parse(is);
+ 	    is.close();
 	    return s;
 	} catch (Exception e) {
 	    throw new AdminException("Error executing status", e);
@@ -56,12 +66,15 @@ public class HttpKannelAdmin
 
     /**
      * store-status
-     * Get the current content of the store queue of the gateway in a text version. No password required, unless status-password set, in which case either that or main admin password must be supplied.
+     * Get the current content of the store queue of the gateway in a text version. No
+     * password required, unless status-password set, in which case either that or main
+     * admin password must be supplied.
+     * @return A StoreStatus containing conveniences to access the XML.
      */
     public StoreStatus getStoreStatus() throws AdminException
     {
 	try {
-	    InputStream is = getUrl("store-status", true).openStream();
+	    InputStream is = getUrl("store-status.xml", true).openStream();
 	    StoreStatus s = StoreStatus.parse(is);
 	    is.close();
 	    return s;
@@ -114,7 +127,10 @@ public class HttpKannelAdmin
 
     /**
      * shutdown
-     * Bring down the gateway, by setting state to 'shutdown'. After a shutdown is initiated, there is no other chance to resume normal operation. However, 'status' command still works. Password required. If shutdown is sent for a second time, the gateway is forced down, even if it has still messages in queue.
+     * Bring down the gateway, by setting state to 'shutdown'. After a shutdown is initiated,
+     * there is no other chance to resume normal operation. However, 'status' command still
+     * works. Password required. If shutdown is sent for a second time, the gateway is forced
+     * down, even if it has still messages in queue.
      */
     public void shutdown() throws AdminException
     {
@@ -127,7 +143,8 @@ public class HttpKannelAdmin
 
     /**
      * flush-dlr
-     * If Kannel state is 'suspended' this will flush all queued DLR messages in the current storage space. Password required.
+     * If Kannel state is 'suspended' this will flush all queued DLR messages in the current
+     * storage space. Password required.
      */
     public void flushDLR() throws AdminException
     {
@@ -141,7 +158,10 @@ public class HttpKannelAdmin
 
     /**
      * start-smsc
-     * Re-start a single SMSC link. Password required. Additionally the smsc parameter must be given to identify which smsc-admin-id should be re-started. The configuration for the SMSC link is re-read from disk before the action is performed.
+     * Re-start a single SMSC link. Password required. Additionally the smsc parameter must
+     * be given to identify which smsc-admin-id should be re-started. The configuration
+     * for the SMSC link is re-read from disk before the action is performed.
+     * @param smsc The smsc-id
      */
     public void startSMSC(String smsc) throws AdminException
     {
@@ -152,13 +172,15 @@ public class HttpKannelAdmin
 	    if (response.contains("Could not re-start smsc-id") ||
 		response.contains("SMSC id not given")) throw new AdminException(response.trim());
 	} catch (Exception e) {
-	    throw new AdminException("Error executing flush-dlr", e);
+	    throw new AdminException("Error executing start-smsc", e);
 	}
     }
 
     /**
      * stop-smsc
-     * Shutdown a single SMSC link. Password required. Additionally the smsc parameter must be given (see above).
+     * Shutdown a single SMSC link. Password required. Additionally the smsc parameter must
+     * be given (see above).
+     * @param smsc The smsc-id
      */
     public void stopSMSC(String smsc) throws AdminException
     {
@@ -169,13 +191,15 @@ public class HttpKannelAdmin
 	    if (response.contains("Could not shut down smsc-id") ||
 		response.contains("SMSC id not given")) throw new AdminException(response.trim());
 	} catch (Exception e) {
-	    throw new AdminException("Error executing flush-dlr", e);
+	    throw new AdminException("Error executing stop-smsc", e);
 	}
     }
 
     /**
      * add-smsc
-     * Adds an SMSC link previously removed or created after the service was started. Password required. Additionally the smsc parameter must be given (see above).
+     * Adds an SMSC link previously removed or created after the service was started. Password
+     * required. Additionally the smsc parameter must be given (see above).
+     * @param smsc The smsc-id
      */
     public void addSMSC(String smsc) throws AdminException
     {
@@ -186,13 +210,16 @@ public class HttpKannelAdmin
 	    if (response.contains("Could not add smsc-id") ||
 		response.contains("SMSC id not given")) throw new AdminException(response.trim());
 	} catch (Exception e) {
-	    throw new AdminException("Error executing flush-dlr", e);
+	    throw new AdminException("Error executing add-smsc", e);
 	}
     }
 
     /**
      * remove-smsc
-     * Removes an existing SMSC link. Password required. Additionally the smsc parameter must be given (see above). If you want a permanent removal, you should also remove the entry from the configuration file or it will be recreated after a service restart.
+     * Removes an existing SMSC link. Password required. Additionally the smsc parameter
+     * must be given (see above). If you want a permanent removal, you should also remove
+     * the entry from the configuration file or it will be recreated after a service restart.
+     * @param smsc The smsc-id
      */
     public void removeSMSC(String smsc) throws AdminException
     {
@@ -203,13 +230,14 @@ public class HttpKannelAdmin
 	    if (response.contains("Could not remove smsc-id") ||
 		response.contains("SMSC id not given")) throw new AdminException(response.trim());
 	} catch (Exception e) {
-	    throw new AdminException("Error executing flush-dlr", e);
+	    throw new AdminException("Error executing remove-smsc", e);
 	}
     }
 
     /**
      * restart
-     * Re-start whole bearerbox, hence all SMSC links. Password required. Beware that you loose the smsbox connections in such a case.
+     * Re-start whole bearerbox, hence all SMSC links. Password required. Beware that you
+     * loose the smsbox connections in such a case.
      */
     public void restart() throws AdminException
     {
@@ -223,7 +251,9 @@ public class HttpKannelAdmin
 
     /**
      * loglevel
-     * Set Kannel log-level of log-files while running. This allows you to change the current log-level of the log-files on the fly.
+     * Set Kannel log-level of log-files while running. This allows you to change the current
+     * log-level of the log-files on the fly.
+     * @param logLevel The new log level to set
      */
     public void logLevel(int logLevel) throws AdminException
     {
@@ -233,13 +263,15 @@ public class HttpKannelAdmin
 	    String response = getContent(getUrl(query.toString(), true));
 	    if (response.contains("New level not given")) throw new AdminException(response.trim());
 	} catch (Exception e) {
-	    throw new AdminException("Error executing flush-dlr", e);
+	    throw new AdminException("Error executing log-level", e);
 	}
     }    
 
     /**
      * reload-lists
-     * Re-loads the 'white-list' and 'black-list' URLs provided in the core group. This allows Kannel to keep running while the remote lists change and signal bearerbox to re-load them on the fly. 
+     * Re-loads the 'white-list' and 'black-list' URLs provided in the core group. This
+     * allows Kannel to keep running while the remote lists change and signal bearerbox
+     * to re-load them on the fly. 
      */
     public void reloadLists() throws AdminException
     {
@@ -253,7 +285,13 @@ public class HttpKannelAdmin
 
     private static String getContent(URL u) throws IOException
     {
-	InputStream is = u.openStream();
+	// InputStream is = u.openStream();
+	// Need to set HTTP accept header to text only. Java's default includes HTML, which
+	// causes Kannel to auto-detect and send HTML.
+	URLConnection uc = u.openConnection();
+	uc.setRequestProperty("Accept", "text/plain");
+	uc.connect();
+	InputStream is = uc.getInputStream();
 	String response = parseStreamToString(is, -1);
 	is.close();
 	return response;
@@ -269,6 +307,42 @@ public class HttpKannelAdmin
 	}
 	bf.close();
 	return o.toString();
+    }
+
+    /**
+     * A command line client for testing.
+     * usage: HttpKannelAdmin <host> <password> <method> <opt:param>
+     */
+    public static void main(String[] argv)
+    {
+	org.apache.log4j.BasicConfigurator.configure();
+	if (argv.length < 3) {
+	    System.err.println("usage: HttpKannelAdmin <host> <password> <method> <opt:param>");
+	    System.exit(1);
+	}
+	try {
+	    KannelAdmin admin = new HttpKannelAdmin(new URL(argv[0]), argv[1]);
+	    String method = argv[2];
+	    String param = null;
+	    if (argv.length == 4) param = argv[3];
+	    if (method.equals("status")) System.out.println(admin.getStatus().getGateway().xmlText());
+	    if (method.equals("store-status")) System.out.println(admin.getStoreStatus());
+	    if (method.equals("suspend")) admin.suspend();
+	    if (method.equals("isolate")) admin.isolate();
+	    if (method.equals("resume")) admin.resume();
+	    if (method.equals("shutdown")) admin.shutdown();
+	    if (method.equals("flush-dlr")) admin.flushDLR();
+	    if (method.equals("start-smsc")) admin.startSMSC(param);
+	    if (method.equals("stop-smsc")) admin.stopSMSC(param);
+	    if (method.equals("add-smsc")) admin.addSMSC(param);
+	    if (method.equals("remove-smsc")) admin.removeSMSC(param);
+	    if (method.equals("restart")) admin.restart();
+	    if (method.equals("log-level")) admin.logLevel(Integer.parseInt(param));
+	    if (method.equals("reload-lists")) admin.reloadLists();
+	    System.exit(0);
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
     }
 
 }
