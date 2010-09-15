@@ -5,6 +5,11 @@ import java.io.FileInputStream;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 
+/**
+ * Utilities for the Box classes.
+ * 
+ * @author Garth Patil <garthpatil@gmail.com>
+ */
 public class Utils
 {
 
@@ -18,7 +23,6 @@ public class Utils
 	while (dis.available() != 0) {
 	    content.append(dis.readLine());
 	}
-	// dispose all the resources after using them.
 	fis.close();
 	bis.close();
 	dis.close();
