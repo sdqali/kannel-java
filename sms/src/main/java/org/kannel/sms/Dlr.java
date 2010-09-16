@@ -2,6 +2,7 @@ package org.kannel.sms;
 
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.Date;
 
 public class Dlr
 {

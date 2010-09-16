@@ -66,7 +66,8 @@ public class HttpSmsSender
 	//dlr-url
 	add("dlr-url", sms.getDlrUrl(), params);
 	//pid
-	add("pid", sms.getPid().intValue(), params);
+	//add("pid", sms.getPid().intValue(), params);
+	if (sms.getPid() != null) params.put("pid", Integer.toString(sms.getPid().intValue()));
 	add("alt-dcs", sms.getAltDcs(), params);
 	add("rpi", sms.getRpi(), params);
 	add("account", sms.getAccount(), params);

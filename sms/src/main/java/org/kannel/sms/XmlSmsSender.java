@@ -79,9 +79,9 @@ public class XmlSmsSender
 	    submit.setUd(sms.getText());
 	}
 
-	if (sms.getUdh().length > 0) {
-	    submit.setUdh(new String(sms.getUdh()));
-	}
+// 	if (sms.getUdh().length > 0) {
+// 	    submit.setUdh(new String(sms.getUdh()));
+// 	}
 
 	if (sms.getDlrMask() != null && sms.getDlrUrl() != null) {
 	    Statusrequest statusrequest = submit.addNewStatusrequest();

@@ -47,4 +47,11 @@ public class SendStatus
 	}
     }
 
+    public String toString()
+    {
+	StringBuffer o = new StringBuffer();
+	o.append("Status: ").append(status).append(", Message: ").append(message).append(", HTTP: ").append(httpStatus);
+	return o.toString();
+    }
+
 }

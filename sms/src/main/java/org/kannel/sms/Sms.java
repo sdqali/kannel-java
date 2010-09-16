@@ -3,6 +3,11 @@ package org.kannel.sms;
 import java.net.URL;
 import java.nio.charset.Charset;
 
+/**
+ * An SMS message.
+ *
+ * @author Garth Patil <garthpatil@gmail.com>
+ */
 public class Sms
 {
 
@@ -88,9 +93,9 @@ public class Sms
      * Message Class 0 to 3, A value of 0 sends the message directly to display, 1 sends
      * to mobile, 2 to SIM and 3 to SIM toolkit.
      */
-    private int mclass;
-    public int getMclass() { return this.mclass; }
-    public void setMclass(int mclass) { this.mclass = mclass; }
+    private Integer mclass;
+    public Integer getMclass() { return this.mclass; }
+    public void setMclass(Integer mclass) { this.mclass = mclass; }
     
     /**
      * mwi
@@ -99,17 +104,17 @@ public class Sms
      * 3 for activating the voice, fax, email and other indicator, or 4,5,6,7 for deactivating,
      * respectively. This option excludes the flash option. [a]
      */
-    private int mwi;
-    public int getMwi() { return this.mwi; }
-    public void setMwi(int mwi) { this.mwi = mwi; }
+    private Integer mwi;
+    public Integer getMwi() { return this.mwi; }
+    public void setMwi(Integer mwi) { this.mwi = mwi; }
 
     /**
      * compress
      * Optional. Sets the Compression bit in DCS Field.
      */
-    private int compress;
-    public int getCompress() { return this.compress; }
-    public void setCompress(int compress) { this.compress = compress; }
+    private Integer compress;
+    public Integer getCompress() { return this.compress; }
+    public void setCompress(Integer compress) { this.compress = compress; }
     
     /**
      * coding
@@ -117,9 +122,9 @@ public class Sms
      * 8bit or UCS-2. If unset, defaults to 7 bits unless a udh is defined, which sets coding
      * to 8bits.
      */
-    private int coding;
-    public int getCoding() { return this.coding; }
-    public void setCoding(int coding) { this.coding = coding; }
+    private Integer coding;
+    public Integer getCoding() { return this.coding; }
+    public void setCoding(Integer coding) { this.coding = coding; }
 
     /**
      * validity
@@ -128,9 +133,9 @@ public class Sms
      * that it cannot receive the sms, the smsc discards the message. Note: you must have
      * your Kannel box time synchronized with the SMS Center.
      */
-    private int validity;
-    public int getValidity() { return this.validity; }
-    public void setValidity(int validity) { this.validity = validity; }
+    private Integer validity;
+    public Integer getValidity() { return this.validity; }
+    public void setValidity(Integer validity) { this.validity = validity; }
 
     /**
      * deferred
@@ -138,9 +143,9 @@ public class Sms
      * now plus this many minutes. Note: you must have your Kannel box time synchronized
      * with the SMS Center.
      */
-    private int deferred;
-    public int getDeferred() { return this.deferred; }
-    public void setDeferred(int deferred) { this.deferred = deferred; }
+    private Integer deferred;
+    public Integer getDeferred() { return this.deferred; }
+    public void setDeferred(Integer deferred) { this.deferred = deferred; }
 
     /**
      * dlr-mask
@@ -149,9 +154,9 @@ public class Sms
      * on SMSC, 8: Delivered to SMSC, 16: Non-Delivered to SMSC. Must set dlr-url on sendsms-user
      * group or use the dlr-url CGI variable.
      */
-    private int dlrMask;
-    public int getDlrMask() { return this.dlrMask; }
-    public void setDlrMask(int dlrMask) { this.dlrMask = dlrMask; }
+    private Integer dlrMask;
+    public Integer getDlrMask() { return this.dlrMask; }
+    public void setDlrMask(Integer dlrMask) { this.dlrMask = dlrMask; }
 
     /**
      * dlr-url
@@ -166,26 +171,26 @@ public class Sms
      * Optional. Sets the PID value. (See ETSI Documentation). Ex: SIM Toolkit messages
      * would use something like &pid=127&coding=1&alt-dcs=1&mclass=3
      */
-    private byte pid;
-    public byte getPid() { return this.pid; }
-    public void setPid(byte pid) { this.pid = pid; }
+    private Byte pid;
+    public Byte getPid() { return this.pid; }
+    public void setPid(Byte pid) { this.pid = pid; }
 
     /**
      * alt-dcs
      * Optional. If unset, Kannel uses the alt-dcs defined on smsc configuration, or 0X
      * per default. If equals to 1, uses FX. If equals to 0, force 0X.
      */
-    private int altDcs;
-    public int getAltDcs() { return this.altDcs; }
-    public void setAltDcs(int altDcs) { this.altDcs = altDcs; }
+    private Integer altDcs;
+    public Integer getAltDcs() { return this.altDcs; }
+    public void setAltDcs(Integer altDcs) { this.altDcs = altDcs; }
 
     /**
      * rpi
      * Optional. Sets the Return Path Indicator (RPI) value. (See ETSI Documentation).
      */
-    private int rpi;
-    public int getRpi() { return this.rpi; }
-    public void setRpi(int rpi) { this.rpi = rpi; }
+    private Integer rpi;
+    public Integer getRpi() { return this.rpi; }
+    public void setRpi(Integer rpi) { this.rpi = rpi; }
 
     /**
      * account
@@ -215,8 +220,8 @@ public class Sms
      * priority
      * Optional. Sets the Priority value (range 0-3 is allowed). 
     */
-    private int priority;
-    public int getPriority() { return this.priority; }
-    public void setPriority(int priority) { this.priority = priority; }    
+    private Integer priority;
+    public Integer getPriority() { return this.priority; }
+    public void setPriority(Integer priority) { this.priority = priority; }    
 
 }

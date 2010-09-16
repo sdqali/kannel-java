@@ -30,4 +30,37 @@ public abstract class SmsSender
      */
     public abstract SendStatus send(Sms sms) throws Exception;
 
+    /**
+     * Main method for testing.
+     * usage: SmsSender <from> <to> <text>
+     */
+    public static void main(String[] argv)
+    {
+	if (argv.length != 3) {
+	    System.err.println("usage: SmsSender <from> <to> <text>");
+	    System.exit(1);
+	}
+
+	Sms sms = new Sms();
+	sms.setUsername("foo");
+	sms.setPassword("bar");
+	sms.setFrom(argv[0]);
+	sms.setTo(argv[1]);
+	sms.setText(argv[2]);
+
+	try {
+	    // try HTTP
+	    SmsSender s = new HttpSmsSender(new URL("http://localhost:13013/cgi-bin/sendsms"));
+	    SendStatus status = s.send(sms);
+	    System.out.println(status.toString());
+	    
+	    // try XML
+	    s = new XmlSmsSender(new URL("http://localhost:13013/cgi-bin/sendsms"));
+	    status = s.send(sms);
+	    System.out.println(status.toString());
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
+    }
+
 }

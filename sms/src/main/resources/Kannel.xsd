@@ -18,8 +18,8 @@
       <xs:element name="ud" type="xs:string" minOccurs="0" maxOccurs="1"/>
       <xs:element name="udh" type="xs:string" minOccurs="0" maxOccurs="1"/>
       <xs:element name="dcs" type="dcs" minOccurs="0" maxOccurs="1"/>
-      <xs:element name="pid" type="xs:string" minOccurs="0" maxOccurs="1"/>
-      <xs:element name="rpi" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="pid" type="xs:int" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="rpi" type="xs:int" minOccurs="0" maxOccurs="1"/>
       <xs:element name="vp" type="time" minOccurs="0" maxOccurs="1"/>
       <xs:element name="timing" type="time" minOccurs="0" maxOccurs="1"/>
       <xs:element name="statusrequest" type="statusrequest" minOccurs="0" maxOccurs="1"/>
@@ -36,11 +36,11 @@
 
   <xs:complexType name="dcs">
     <xs:all>
-      <xs:element name="mclass" type="xs:string" minOccurs="0" maxOccurs="1"/>
-      <xs:element name="coding" type="xs:string" minOccurs="0" maxOccurs="1"/>
-      <xs:element name="mwi" type="xs:string" minOccurs="0" maxOccurs="1"/>
-      <xs:element name="compress" type="xs:string" minOccurs="0" maxOccurs="1"/>
-      <xs:element name="alt-dcs" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="mclass" type="xs:int" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="coding" type="xs:int" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="mwi" type="xs:int" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="compress" type="xs:int" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="alt-dcs" type="xs:int" minOccurs="0" maxOccurs="1"/>
     </xs:all>
   </xs:complexType>
 
@@ -52,7 +52,7 @@
 
   <xs:complexType name="statusrequest">
     <xs:all>
-      <xs:element name="dlr-mask" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="dlr-mask" type="xs:int" minOccurs="0" maxOccurs="1"/>
       <xs:element name="dlr-url" type="xs:string" minOccurs="0" maxOccurs="1"/>
     </xs:all>
   </xs:complexType>
