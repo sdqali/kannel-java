@@ -30,6 +30,11 @@ public class KjWritingThread
 	this.kbind = kbind;
 	this.messages = new LinkedList();
     }
+
+    public void send(String sender, String receiver, String udhdata, String msgdata)
+    {
+	send(new SMSPacketMessage(sender, receiver, udhdata, msgdata));
+    }
     
     public void send(SMSPacketMessage pack)
     {
@@ -43,6 +48,11 @@ public class KjWritingThread
 	} catch(IOException e) {
 	    System.out.println("sendind message failed : " + e);
 	}
+    }
+
+    public void sendOnThread(String sender, String receiver, String udhdata, String msgdata)
+    {
+	sendOnThread(new SMSPacketMessage(sender, receiver, udhdata, msgdata));
     }
     
     public void sendOnThread(SMSPacketMessage pack)
