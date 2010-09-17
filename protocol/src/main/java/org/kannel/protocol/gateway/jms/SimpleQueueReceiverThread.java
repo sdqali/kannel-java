@@ -1,4 +1,4 @@
-package org.kannel.protocol.jms;
+package org.kannel.protocol.gateway.jms;
 
 import javax.jms.MessageListener;
 import javax.jms.*;

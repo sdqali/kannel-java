@@ -1,4 +1,4 @@
-package org.kannel.protocol.jms;
+package org.kannel.protocol.gateway.jms;
 
 import org.kannel.protocol.packets.SMSPacketMessage;
 import java.io.Serializable;
