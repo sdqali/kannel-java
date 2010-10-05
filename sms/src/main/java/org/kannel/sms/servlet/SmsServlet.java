@@ -1,87 +1,109 @@
 package org.kannel.sms.servlet;
 
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Enumeration;
-import java.util.HashMap;
+import java.nio.charset.Charset;
 import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
+import org.kannel.sms.Sms;
+import org.kannel.sms.UrlTemplate;
+import org.kannel.xml.*;
 
-public class SmsServlet extends HttpServlet
+/**
+ * A sample servlet for receiving SMSs from Kannel.
+ *
+ * @author Garth Patil <garthpatil@gmail.com>
+ */
+public class SmsServlet extends KannelServlet
 {
     private static Logger logger = Logger.getLogger(SmsServlet.class);
-    private Observable obs;
 
-    public void init(ServletConfig config) throws ServletException
-    {
-        super.init(config);
-	//load observers from params
-	obs = new Observable();
-	String[] observers = config.getInitParameter("sms-handlers").split(",");
-	for (String s:observers) {
-	    try {
-		Observer o = (Observer)Class.forName(s).newInstance();
-		logger.info("Loading SMS handler "+s);
-		obs.addObserver(o);
-	    } catch (Exception e) {
-		throw new ServletException(e);
-	    }
-	}
-	logger.info("Loaded "+obs.countObservers()+" SMS handlers");
-    }
-
-    public void doGet(HttpServletRequest request, HttpServletResponse response) 
-	throws ServletException,IOException {
-	doPost(request, response);
-    }
-    
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
+    public void service(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException
     {
-       PrintWriter out = response.getWriter();
-       out.println("ok");
+	Sms sms = null;
+	Map h = getHeaderMap(request);
+	if (h.size() > 1) {
+	    //X-Kannel header request
+	    sms = Sms.buildFromHeaders(h);
+	    sms.setCharset(Charset.forName(request.getCharacterEncoding()));
+	    sms.setText(getContent(request.getInputStream()));
+	} else if (request.getContentType().contains("xml")) {
+	    //XML post
+	    sms = smsFromXml(request.getInputStream());
+	} else {
+	    //parameters
+	    UrlTemplate u = new UrlTemplate(null).all();
+	    sms = Sms.buildFromTemplate(u, request.getParameterMap());
+	}
 
-       //obs.notifyObservers(sms);
+	PrintWriter out = response.getWriter();
+	out.println("ok");
+
+	obs.notifyObservers(sms);
     }
 
-    private Map<String,String> headersToMap(HttpServletRequest request) 
-    {
-	Map<String,String> m = new HashMap<String,String>();
-	for (Enumeration e = request.getHeaderNames(); e.hasMoreElements() ;) {
-	    String s = (String)e.nextElement();
-	    m.put(s, request.getHeader(s));
-	}	
-	return m;
-     }
-}
 
-//username	X-Kannel-Username
-//password	X-Kannel-Password
-//from	X-Kannel-From
-//to	X-Kannel-To
-//text	request body
-//charset	charset as in Content-Type: text/html; charset=ISO-8859-1
-//udh	X-Kannel-UDH
-//smsc	X-Kannel-SMSC
-//flash	X-Kannel-Flash (deprecated, see X-Kannel-MClass
-//mclass	X-Kannel-MClass
-//mwi	X-Kannel-MWI
-//compress	X-Kannel-Compress
-//coding	X-Kannel-Coding. If unset, defaults to 0 (7 bits) if Content-Type is text/plain , text/html or text/vnd.wap.wml. On application/octet-stream, defaults to 8 bits (1). All other Content-Type values are rejected.
-//validity	X-Kannel-Validity
-//deferred	X-Kannel-Deferred
-//dlr-mask	X-Kannel-DLR-Mask
-//dlr-url	X-Kannel-DLR-Url
-//account	X-Kannel-Account
-//pid	X-Kannel-PID
-//alt-dcs	X-Kannel-Alt-DCS
-//binfo	X-Kannel-BInfo
-//rpi	X-Kannel-RPI
-//priority	X-Kannel-Priority
+    /**
+     * TODO: Convert XML MessageDocument to Sms object.
+     */
+    private Sms smsFromXml(InputStream is) throws IOException
+    {
+	try {
+	    Submit s = MessageDocument.Factory.parse(is).getMessage().getSubmit();
+	    
+	    Sms sms = new Sms();
+
+//   <submit>
+//       <da><number>destination number (to)</number></da>
+//       <oa><number>originating number (from)</number></oa>
+//       <ud>user data (text)</ud>
+//       <udh>user data header (udh)</udh>
+//     <meta-data>meta-data</meta-data>
+//     <dcs>
+//       <mclass>mclass</mclass>
+//       <coding>coding</coding>
+//       <mwi>mwi</mwi>
+//       <compress>compress</compress>
+//       <alt-dcs>alt-dcs</alt-dcs>
+//     </dcs>
+//     <pid>pid</pid>
+//     <rpi>rpi</rpi>
+//     <vp>
+//       <delay>validity time in minutes</delay>
+//     </vp>
+//     <timing>
+//       <delay>deferred time in minutes</delay>
+//     </timing>
+//     <statusrequest>
+//       <dlr-mask>dlr-mask</dlr-mask>
+//       <dlr-url>dlr-url</dlr-url>
+//     </statusrequest>
+
+//     <!-- request from application to Kannel -->
+//     <from>
+//       <user>username</user>
+//       <username>username</username> 
+//       <pass>password</pass>
+//       <password>password</password>
+//       <account>account</account>
+//     </from>
+//     <to>smsc-id</to>
+
+//     <!-- request from Kannel to application -->
+//     <from>smsc-id</from>
+//     <to>service-name</to>
+
+//   </submit>
+
+	    return sms;
+	} catch (Exception e) {
+	    throw new IOException(e);
+	}
+    }
+
+}

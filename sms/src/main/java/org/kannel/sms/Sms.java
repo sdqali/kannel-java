@@ -2,13 +2,17 @@ package org.kannel.sms;
 
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
- * An SMS message.
+ * An SMS message. This combines fields used in both sending and receiving SMS messages.
  *
  * @author Garth Patil <garthpatil@gmail.com>
  */
 public class Sms
+    extends Msg
 {
 
     /**
@@ -28,86 +32,7 @@ public class Sms
     private String password;
     public String getPassword() { return this.password; }
     public void setPassword(String password) { this.password = password; }
-
-    /**
-     * from
-     * Phone number of the sender. This field is usually overridden by the SMS Center, or
-     * it can be overridden by faked-sender variable in the sendsms-user group. If this
-     * variable is not set, smsbox global-sender is used.
-     */
-    private String from;
-    public String getFrom() { return this.from; }
-    public void setFrom(String from) { this.from = from; }
-
-    /**
-     * to
-     * Phone number of the receiver. To send to multiple receivers, separate each entry
-     * with space (' ', '+' url-encoded) - but note that this can be deactivated via sendsms-chars
-     * in the 'smsbox' group.
-     */
-    private String to;
-    public String getTo() { return this.to; }
-    public void setTo(String to) { this.to = to; }
-    
-    /**
-     * text
-     * Contents of the message, URL encoded as necessary. The content can be more than
-     * 160 characters, but then sendsms-user group must have max-messages set more than 1.
-     */
-    private String text;
-    public String getText() { return this.text; }
-    public void setText(String text) { this.text = text; }
-    
-    /**
-     * charset
-     * Charset of text message. Used to convert to a format suitable for 7 bits or to UCS-2.
-     * Defaults to UTF-8 if coding is 7 bits and UTF-16BE if coding is UCS-2.
-     */
-    private Charset charset;
-    public Charset getCharset() { return this.charset; }
-    public void setCharset(Charset charset) { this.charset = charset; }
-    
-    /**
-     * udh
-     * Optional User Data Header (UDH) part of the message. Must be URL encoded.
-     */
-    private byte[] udh;
-    public byte[] getUdh() { return this.udh; }
-    public void setUdh(byte[] udh) { this.udh = udh; }
-
-    /**
-     * smsc
-     * Optional virtual smsc-id from which the message is supposed to have arrived. This
-     * is used for routing purposes, if any denied or preferred SMS centers are set up
-     * in SMS center configuration. This variable can be overridden with a forced-smsc
-     * configuration variable. Likewise, the default-smsc variable can be used to set the
-     * SMSC if it is not set otherwise.
-     */
-    private String smsc;
-    public String getSmsc() { return this.smsc; }
-    public void setSmsc(String smsc) { this.smsc = smsc; }
-    
-    /**
-     * mclass
-     * Optional. Sets the Message Class in DCS field. Accepts values between 0 and 3, for
-     * Message Class 0 to 3, A value of 0 sends the message directly to display, 1 sends
-     * to mobile, 2 to SIM and 3 to SIM toolkit.
-     */
-    private Integer mclass;
-    public Integer getMclass() { return this.mclass; }
-    public void setMclass(Integer mclass) { this.mclass = mclass; }
-    
-    /**
-     * mwi
-     * Optional. Sets Message Waiting Indicator bits in DCS field. If given, the message
-     * will be encoded as a Message Waiting Indicator. The accepted values are 0,1,2 and
-     * 3 for activating the voice, fax, email and other indicator, or 4,5,6,7 for deactivating,
-     * respectively. This option excludes the flash option. [a]
-     */
-    private Integer mwi;
-    public Integer getMwi() { return this.mwi; }
-    public void setMwi(Integer mwi) { this.mwi = mwi; }
-
+   
     /**
      * compress
      * Optional. Sets the Compression bit in DCS Field.
@@ -116,16 +41,6 @@ public class Sms
     public Integer getCompress() { return this.compress; }
     public void setCompress(Integer compress) { this.compress = compress; }
     
-    /**
-     * coding
-     * Optional. Sets the coding scheme bits in DCS field. Accepts values 0 to 2, for 7bit,
-     * 8bit or UCS-2. If unset, defaults to 7 bits unless a udh is defined, which sets coding
-     * to 8bits.
-     */
-    private Integer coding;
-    public Integer getCoding() { return this.coding; }
-    public void setCoding(Integer coding) { this.coding = coding; }
-
     /**
      * validity
      * Optional. If given, Kannel will inform SMS Center that it should only try to send
@@ -193,35 +108,51 @@ public class Sms
     public void setRpi(Integer rpi) { this.rpi = rpi; }
 
     /**
-     * account
-     * Optional. Account name or number to carry forward for billing purposes. This field
-     * is logged as ACT in the log file so it allows you to do some accounting on it if
-     * your front end uses the same username for all services but wants to distinguish
-     * them in the log. In the case of a HTTP SMSC type the account name is prepended with
-     * the service-name (username) and a colon (:) and forwarded to the next instance of
-     * Kannel. This allows hierarchical accounting.
-     */
-    private String account;
-    public String getAccount() { return this.account; }
-    public void setAccount(String account) { this.account = account; }
-
-    /**
-     * binfo
-     * Optional. Billing identifier/information proxy field used to pass arbitrary billing
-     * transaction IDs or information to the specific SMSC modules. For EMI2 this is encapsulated
-     * into the XSer 0c field, for SMPP this is encapsulated into the service_type of the
-     * submit_sm PDU.
-     */
-    private String binfo;
-    public String getBinfo() { return this.binfo; }
-    public void setBinfo(String binfo) { this.binfo = binfo; }
-
-    /**
      * priority
      * Optional. Sets the Priority value (range 0-3 is allowed). 
-    */
+     */
     private Integer priority;
     public Integer getPriority() { return this.priority; }
     public void setPriority(Integer priority) { this.priority = priority; }    
+
+    public static Sms buildFromTemplate(UrlTemplate u, Map m)
+    {
+	return u.parseSms(m);
+    }
+
+    public static Sms buildFromHeaders(Map m)
+    {
+	Sms sms = new Sms();
+	Set<Map.Entry> entries = m.entrySet();
+	for (Map.Entry entry:entries) {
+	    String k = (String)entry.getKey();
+	    String v = (String)entry.getValue();
+	    if (k.equals("X-Kannel-Username")) sms.setUsername(v);
+	    if (k.equals("X-Kannel-Password")) sms.setPassword(v);
+	    if (k.equals("X-Kannel-From")) sms.setFrom(v);
+	    if (k.equals("X-Kannel-To")) sms.setTo(v);
+	    if (k.equals("X-Kannel-UDH")) sms.setUdh(v.getBytes());
+	    if (k.equals("X-Kannel-SMSC")) sms.setSmsc(v);
+	    if (k.equals("X-Kannel-MClass")) sms.setMclass(Integer.parseInt(v));
+	    if (k.equals("X-Kannel-MWI")) sms.setMwi(Integer.parseInt(v));
+	    if (k.equals("X-Kannel-Compress")) sms.setCompress(Integer.parseInt(v));
+	    if (k.equals("X-Kannel-Coding")) sms.setCoding(Integer.parseInt(v));
+	    if (k.equals("X-Kannel-Validity")) sms.setValidity(Integer.parseInt(v));
+	    if (k.equals("X-Kannel-Deferred")) sms.setDeferred(Integer.parseInt(v));
+	    if (k.equals("X-Kannel-DLR-Mask")) sms.setDlrMask(Integer.parseInt(v));
+	    if (k.equals("X-Kannel-DLR-Url")) {
+		try { 
+		    sms.setDlrUrl(new URL(v));
+		} catch (Exception e) {}
+	    }
+	    if (k.equals("X-Kannel-PID")) sms.setPid(Byte.parseByte(v));
+	    if (k.equals("X-Kannel-Alt-DCS")) sms.setAltDcs(Integer.parseInt(v));
+	    if (k.equals("X-Kannel-RPI")) sms.setRpi(Integer.parseInt(v));
+	    if (k.equals("X-Kannel-Account")) sms.setAccount(v);
+	    if (k.equals("X-Kannel-BInfo")) sms.setBinfo(v);
+	    if (k.equals("X-Kannel-Priority")) sms.setPriority(Integer.parseInt(v));
+	}
+	return sms;
+    }
 
 }

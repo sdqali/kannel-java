@@ -52,6 +52,12 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
+      <version>${commons-beanutils.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
       <groupId>org.apache.xmlbeans</groupId>
       <artifactId>xmlbeans</artifactId>
       <version>${xmlbeans.version}</version>
@@ -62,6 +68,7 @@
   <properties>
     <!-- 3rd Party library dependency versions -->
     <servlet-api.version>2.4</servlet-api.version>
+    <commons-beanutils.version>1.8.3</commons-beanutils.version>
     <xmlbeans-maven-plugin.version>2.2.0</xmlbeans-maven-plugin.version>
     <xmlbeans.version>2.2.0</xmlbeans.version>
   </properties>
