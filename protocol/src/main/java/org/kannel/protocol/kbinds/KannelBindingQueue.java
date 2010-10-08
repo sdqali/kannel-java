@@ -1,5 +1,7 @@
 package org.kannel.protocol.kbinds;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
@@ -10,6 +12,7 @@ import org.kannel.protocol.exceptions.PacketParseException;
 import org.kannel.protocol.exceptions.WrongPropertieException;
 import org.kannel.protocol.packets.BasicKannelProtocolMessage;
 import org.kannel.protocol.packets.BasicPacket;
+import org.kannel.protocol.packets.SMSPacketMessage;
 
 /**
  * An extension to KannelBinding that uses BlockingQueues for reading a writing, and
@@ -25,9 +28,13 @@ public class KannelBindingQueue
 						      WrongPropertieException,
 						      IOException
     {
-	super(conf);
+	//	super(conf);
+	init(conf);
 	readQueue = new LinkedBlockingQueue<BasicPacket>();
 	writeQueue = new LinkedBlockingQueue<BasicKannelProtocolMessage>();
+	if (this.connectedAtStart) {
+	    connect();
+	}
     }
 
     private ReadThread reader;
@@ -39,7 +46,11 @@ public class KannelBindingQueue
 
     public BlockingQueue<BasicPacket> getReadQueue() { return this.readQueue; }
 
+    public BasicPacket read() throws Exception { return getReadQueue().take(); }
+
     public BlockingQueue<BasicKannelProtocolMessage> getWriteQueue() { return this.writeQueue; }
+
+    public void write(BasicKannelProtocolMessage bkpMessage) throws Exception { getWriteQueue().put(bkpMessage); }
 
     public void connect() throws IOException
     {
@@ -54,6 +65,19 @@ public class KannelBindingQueue
     public void disconnect() throws IOException {
 	running = false;
 	super.disconnect();
+    }
+
+    /**
+     * Test main method
+     */
+    public static void main(String argv[]) throws Exception
+    {
+	Properties props = new Properties();
+	props.load(new FileInputStream(new File(argv[0])));
+	KannelBindingQueue kbndg = new KannelBindingQueue(props);
+	SMSPacketMessage sms = new SMSPacketMessage("44636", "6508145269", "", "test message");
+	kbndg.write(sms);
+	//kbndg.writeNext(sms);
     }
 
     private class ReadThread extends Thread
@@ -73,6 +97,7 @@ public class KannelBindingQueue
 		    //
 		}
 	    }
+	    System.out.println("Exiting ReadThread");
 	}
     }
 
@@ -90,6 +115,7 @@ public class KannelBindingQueue
 		    //
 		}
 	    }
+	    System.out.println("Exiting WriteThread");
 	}
     }
 

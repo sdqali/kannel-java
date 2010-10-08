@@ -90,36 +90,32 @@ public class KjReadingThread
 	BasicPacket recPacket = null;
 	int type = -1;
 	System.out.println("Reading thread started.");
-	try{
-	    while(!halted){
-		try{
-		    recPacket = kbind.readNext();
+	while(!halted){
+	    try{
+		recPacket = kbind.read();
+		
+		if (recPacket != null){
+		    type = recPacket.type.getIntValue();
 		    
-		    if (recPacket != null){
-			type = recPacket.type.getIntValue();
-			
-			if(type == BasicPacket.ACK_PKT){
-			    onAck(recPacket);
-			}else if(type == BasicPacket.ADMIN_PKT) {
-			    onAdmin(recPacket);
-			}else if(type == BasicPacket.HEARTBEAT_PKT) {
-			    onHeartbeat(recPacket);
-			}else if(type == BasicPacket.SMS_PKT) {
-			    onSms(recPacket);
-			    //this.jmsTransport.gotMOMessage((SMSPacketMessage)recPacket);
-			}else if(type == BasicPacket.WDP_PKT) {
-			    onWdp(recPacket);
-			}else{
-			    // NOP
-			}
+		    if(type == BasicPacket.ACK_PKT){
+			onAck(recPacket);
+		    }else if(type == BasicPacket.ADMIN_PKT) {
+			onAdmin(recPacket);
+		    }else if(type == BasicPacket.HEARTBEAT_PKT) {
+			onHeartbeat(recPacket);
+		    }else if(type == BasicPacket.SMS_PKT) {
+			onSms(recPacket);
+			//this.jmsTransport.gotMOMessage((SMSPacketMessage)recPacket);
+		    }else if(type == BasicPacket.WDP_PKT) {
+			onWdp(recPacket);
+		    }else{
+			// NOP
 		    }
-		}catch(PacketParseException e){
-		    System.out.println("Packet parse exception");
 		}
-		try{this.sleep(100);}catch(Exception e){e.printStackTrace();}
+	    } catch(Exception e) {
+		System.out.println("Packet parse exception");
 	    }
-	}catch(IOException e){
-	    System.out.println("Thread Error");
+	    try{this.sleep(100);}catch(Exception e){e.printStackTrace();}
 	}
     }
 }

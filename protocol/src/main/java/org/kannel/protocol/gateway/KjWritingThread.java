@@ -44,8 +44,8 @@ public class KjWritingThread
 		this.ackAdminThread.waitAck(pack);
 	    }
 	    // System.out.println("write it");
-	    this.kbind.writeNext((BasicKannelProtocolMessage)pack);
-	} catch(IOException e) {
+	    this.kbind.write((BasicKannelProtocolMessage)pack);
+	} catch(Exception e) {
 	    System.out.println("sendind message failed : " + e);
 	}
     }

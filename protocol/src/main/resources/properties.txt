@@ -1,7 +1,9 @@
 
 KannelBinding.heartbeating_rate = 10000
 KannelBinding.initialConnectedState = connected
-KannelBinding.bearerbox_host = localhost
-KannelBinding.bearerbox_port = 6667
+#KannelBinding.bearerbox_host = localhost
+#KannelBinding.bearerbox_port = 6667
+KannelBinding.bearerbox_host = 127.0.0.1
+KannelBinding.bearerbox_port = 13001
 KannelBinding.boxc_id = 
 
