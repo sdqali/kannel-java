@@ -41,6 +41,8 @@ public class SMSPacketMessage extends BasicPacket implements BasicKannelProtocol
 	private KString msgdata = null;
 	private KTime time = null;
 	private KString smsc_id = null;
+	private KString smsc_number = null;
+	private KString foreign_id = null;
 	private KString service = null;
 	private KString account = null;
 	private KUUID uuid = null;
@@ -61,7 +63,9 @@ public class SMSPacketMessage extends BasicPacket implements BasicKannelProtocol
 	private KString binfo = null;
 	private KInteger msg_left = null;
 	private KInteger priority = null;
-
+    private KInteger resend_try = null;
+    private KTime resend_time = null;
+    private KString meta_data = null;
 
 	/**
 	 *  Constructor for the SMSPacketMessage object
@@ -94,6 +98,10 @@ public class SMSPacketMessage extends BasicPacket implements BasicKannelProtocol
 		temp += 4;
 		this.smsc_id = new KString("");
 		temp += this.smsc_id.getLength().getIntValue() + 4;
+		this.smsc_number = new KString("");
+		temp += this.smsc_number.getLength().getIntValue() + 4;
+		this.foreign_id = new KString("");
+		temp += this.foreign_id.getLength().getIntValue() + 4;
 		this.service = new KString("");
 		temp += this.service.getLength().getIntValue() + 4;
 		this.account = new KString("");
@@ -134,6 +142,12 @@ public class SMSPacketMessage extends BasicPacket implements BasicKannelProtocol
 		temp += 4;
 		this.priority = new KInteger(0);
 		temp += 4;
+		this.resend_try = new KInteger(0);
+		temp += 4;
+		this.resend_time = new KTime();
+		temp += 4;
+		this.meta_data = new KString("");
+		temp += this.meta_data.getLength().getIntValue() + 4;
 
 		super.length = new KInteger(temp);
 	}
@@ -166,6 +180,8 @@ public class SMSPacketMessage extends BasicPacket implements BasicKannelProtocol
 			this.message = DataTypesTools.byteCat(this.message, this.msgdata.getBytes());
 			this.message = DataTypesTools.byteCat(this.message, this.time.getBytes());
 			this.message = DataTypesTools.byteCat(this.message, this.smsc_id.getBytes());
+			this.message = DataTypesTools.byteCat(this.message, this.smsc_number.getBytes());
+			this.message = DataTypesTools.byteCat(this.message, this.foreign_id.getBytes());
 			this.message = DataTypesTools.byteCat(this.message, this.service.getBytes());
 			this.message = DataTypesTools.byteCat(this.message, this.account.getBytes());
 			this.message = DataTypesTools.byteCat(this.message, this.uuid.getBytes());
@@ -186,6 +202,9 @@ public class SMSPacketMessage extends BasicPacket implements BasicKannelProtocol
 			this.message = DataTypesTools.byteCat(this.message, this.binfo.getBytes());
 			this.message = DataTypesTools.byteCat(this.message, this.msg_left.getBytes());
 			this.message = DataTypesTools.byteCat(this.message, this.priority.getBytes());
+			this.message = DataTypesTools.byteCat(this.message, this.resend_try.getBytes());
+			this.message = DataTypesTools.byteCat(this.message, this.resend_time.getBytes());
+			this.message = DataTypesTools.byteCat(this.message, this.meta_data.getBytes());
 		}
 		return this.message;
 	}
@@ -245,6 +264,13 @@ public class SMSPacketMessage extends BasicPacket implements BasicKannelProtocol
 			// System.out.println("--6 : " + index);
 			this.smsc_id = DataTypesTools.parseKStringFromByteArray(data, index);
 			index += this.smsc_id.getLength().getIntValue() + 4;
+
+			this.smsc_number = DataTypesTools.parseKStringFromByteArray(data, index);
+			index += this.smsc_number.getLength().getIntValue() + 4;
+
+			this.foreign_id = DataTypesTools.parseKStringFromByteArray(data, index);
+			index += this.foreign_id.getLength().getIntValue() + 4;
+
 			// System.out.println("--7 : " + index);
 			this.service = DataTypesTools.parseKStringFromByteArray(data, index);
 			index += this.service.getLength().getIntValue() + 4;
@@ -306,6 +332,13 @@ public class SMSPacketMessage extends BasicPacket implements BasicKannelProtocol
 			// System.out.println("--26 : " + index);
 			this.priority = DataTypesTools.parseKIntFromByteArray(data, index);
 			index += 4;
+			this.resend_try = DataTypesTools.parseKIntFromByteArray(data, index);
+			index += 4;
+			this.resend_time = DataTypesTools.parseKTimeFromByteArray(data, index);
+			index += 4;
+			this.meta_data = DataTypesTools.parseKStringFromByteArray(data, index);
+			index += this.meta_data.getLength().getIntValue() + 4;
+
 			///////////////////////////////////
 		} catch (ArrayIndexOutOfBoundsException e) {
 			throw new PacketParseException();
@@ -403,6 +436,37 @@ public class SMSPacketMessage extends BasicPacket implements BasicKannelProtocol
 		super.length.setValue(len);
 		this.message = null;
 		this.smsc_id = smsc_id;
+	}
+
+
+	/**
+	 *  Sets the smsc_number attribute of the SMSPacketMessage object
+	 *
+	 *@param  smsc_number  The new smsc_number value
+	 */
+	public void setSmsc_number(KString smsc_number) {
+		int len = super.length.getIntValue();
+		len -= this.smsc_number.getLength().getIntValue();
+		len += smsc_number.getLength().getIntValue();
+
+		super.length.setValue(len);
+		this.message = null;
+		this.smsc_number = smsc_number;
+	}
+
+	/**
+	 *  Sets the foreign_id attribute of the SMSPacketMessage object
+	 *
+	 *@param  foreign_id  The new foreign_id value
+	 */
+	public void setForeign_id(KString foreign_id) {
+		int len = super.length.getIntValue();
+		len -= this.foreign_id.getLength().getIntValue();
+		len += foreign_id.getLength().getIntValue();
+
+		super.length.setValue(len);
+		this.message = null;
+		this.foreign_id = foreign_id;
 	}
 
 
@@ -660,6 +724,42 @@ public class SMSPacketMessage extends BasicPacket implements BasicKannelProtocol
 		this.priority = priority;
 	}
 
+	/**
+	 *  Sets the resend_try attribute of the SMSPacketMessage object
+	 *
+	 *@param  resend_try  The new resend_try value
+	 */
+	public void setResend_Try(KInteger resend_try) {
+		this.message = null;
+		this.resend_try = resend_try;
+	}
+
+
+	/**
+	 *  Sets the resend_time attribute of the SMSPacketMessage object
+	 *
+	 *@param  resend_time  The new resend_time value
+	 */
+	public void setResend_Time(KTime resend_time) {
+		this.message = null;
+		this.resend_time = resend_time;
+	}
+
+
+	/**
+	 *  Sets the meta_data attribute of the SMSPacketMessage object
+	 *
+	 *@param  meta_data  The new meta_data value
+	 */
+	public void setMeta_Data(KString meta_data) {
+		int len = super.length.getIntValue();
+		len -= this.meta_data.getLength().getIntValue();
+		len += meta_data.getLength().getIntValue();
+
+		super.length.setValue(len);
+		this.message = null;
+		this.meta_data = meta_data;
+	}
 
 	/**
 	 *  Gets the sender attribute of the SMSPacketMessage object
@@ -718,6 +818,26 @@ public class SMSPacketMessage extends BasicPacket implements BasicKannelProtocol
 	 */
 	public KString getSmsc_id() {
 		return smsc_id;
+	}
+
+
+	/**
+	 *  Gets the smsc_number attribute of the SMSPacketMessage object
+	 *
+	 *@return    The smsc_number value
+	 */
+	public KString getSmsc_number() {
+		return smsc_number;
+	}
+
+
+	/**
+	 *  Gets the foreign_id attribute of the SMSPacketMessage object
+	 *
+	 *@return    The foreign_id value
+	 */
+	public KString getForeign_id() {
+		return foreign_id;
 	}
 
 
@@ -920,6 +1040,33 @@ public class SMSPacketMessage extends BasicPacket implements BasicKannelProtocol
 		return priority;
 	}
 
+	/**
+	 *  Gets the resend_try attribute of the SMSPacketMessage object
+	 *
+	 *@return    The resend_try value
+	 */
+	public KInteger getResend_Try() {
+		return resend_try;
+	}
+
+	/**
+	 *  Gets the resend_time attribute of the SMSPacketMessage object
+	 *
+	 *@return    The resend_time value
+	 */
+	public KTime getResend_Time() {
+		return resend_time;
+	}
+
+	/**
+	 *  Gets the meta_data attribute of the SMSPacketMessage object
+	 *
+	 *@return    The meta_data value
+	 */
+	public KString getMeta_Data() {
+		return meta_data;
+	}
+
 
 	/**
 	 *  String representation of this packet showing all its field and contents 
@@ -936,6 +1083,8 @@ public class SMSPacketMessage extends BasicPacket implements BasicKannelProtocol
 		sb.append("msgdata: ").append(this.msgdata.toString()).append((char) 10);
 		sb.append("time: ").append(this.time.toString()).append((char) 10);
 		sb.append("smsc_id: ").append(this.smsc_id.toString()).append((char) 10);
+		sb.append("smsc_number: ").append(this.smsc_number.toString()).append((char) 10);
+		sb.append("foreign_id: ").append(this.foreign_id.toString()).append((char) 10);
 		sb.append("service: ").append(this.service.toString()).append((char) 10);
 		sb.append("account: ").append(this.account.toString()).append((char) 10);
 		sb.append("uuid: ").append(this.uuid.toString()).append((char) 10);
@@ -956,6 +1105,9 @@ public class SMSPacketMessage extends BasicPacket implements BasicKannelProtocol
 		sb.append("binfo: ").append(this.binfo.toString()).append((char) 10);
 		sb.append("msg_left: ").append(this.msg_left.toString()).append((char) 10);
 		sb.append("priority: ").append(this.priority.toString());
+		sb.append("resend_try: ").append(this.resend_try.toString());
+		sb.append("resend_time: ").append(this.resend_time.toString());
+		sb.append("meta_data: ").append(this.meta_data.toString());
 		sb.append("\n");
 		return sb.toString();
 	}

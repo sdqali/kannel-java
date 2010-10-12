@@ -278,7 +278,8 @@ public class DataTypesTools {
 		position++;
 		// if(swap.getIntValue() != 0x24){
 		if (swap.getIntValue() < 0) {
-			return new KUUID();
+		    System.out.println("swap < 0");
+		    return new KUUID();
 		} else {
 			byte[] bSwap = new byte[swap.getIntValue()];
 			
