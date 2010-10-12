@@ -24,11 +24,16 @@ public class KannelBindingQueue
     extends KannelBinding
 {
 
+    public KannelBindingQueue()
+    {
+	super();
+    }
+
     public KannelBindingQueue(Properties conf) throws NotEnoughPropertiesException,
 						      WrongPropertieException,
 						      IOException
     {
-	//	super(conf);
+	super();
 	init(conf);
 	readQueue = new LinkedBlockingQueue<BasicPacket>();
 	writeQueue = new LinkedBlockingQueue<BasicKannelProtocolMessage>();

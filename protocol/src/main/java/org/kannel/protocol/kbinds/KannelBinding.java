@@ -49,10 +49,13 @@ public class KannelBinding
     protected InputStream inBoundStream = null;
     protected OutputStream outBoundStream = null;
 
-    protected KannelBinding() {}
+    /**
+     * No-op constructor for the KannelBinding object. Used with IOC container config.
+     */
+    public KannelBinding() {}
 
     /**
-     *  Constructor for the KannelBinding object
+     * Constructor for the KannelBinding object
      *
      * @param  conf                              Parameters to configure this
      *      class's behaviour.
@@ -71,8 +74,8 @@ public class KannelBinding
     }
 
     /**
-     *  This method starts a conenction with a bearerbox, as specified in the
-     *  properties file.
+     * This method starts a conenction with a bearerbox, as specified in the
+     * properties file.
      *
      * @exception  IOException  Exception thrown when a connection error occurs
      */
@@ -83,12 +86,11 @@ public class KannelBinding
 	
 	this.inBoundStream = this.kannelSocket.getInputStream();
 	this.outBoundStream = this.kannelSocket.getOutputStream();
-	
 	startHeartBeating();
     }
     
     /**
-     *  Stops a bearerbox connection.
+     * Stops a bearerbox connection.
      *
      * @exception  IOException  Exception thrown when an error occurs
      */
@@ -102,8 +104,8 @@ public class KannelBinding
     }
 
     /**
-     *  Starts the heart beating thread class that sends Heat Beats to the bearer
-     *  in fixed slices of time as defined in the properties
+     * Starts the heart beating thread class that sends Heat Beats to the bearer
+     * in fixed slices of time as defined in the properties
      */
     public void startHeartBeating() {
 	if (this.heartBeater == null) {
@@ -118,14 +120,14 @@ public class KannelBinding
     }
 
     /**
-     *  Stops the heart beating Thread
+     * Stops the heart beating Thread
      */
     public void stopHeartBeating() {
 	this.heartBeater.stop();
     }
 
     /**
-     *  Sets the heartBeatRate attribute of the KannelBinding object
+     * Sets the heartBeatRate attribute of the KannelBinding object
      *
      * @param  heartBeatRate  The new heartBeatRate value
      */
@@ -134,7 +136,7 @@ public class KannelBinding
     }
     
     /**
-     *  Gets the heartBeatRate attribute of the KannelBinding object
+     * Gets the heartBeatRate attribute of the KannelBinding object
      *
      * @return    The heartBeatRate value
      */
@@ -143,9 +145,82 @@ public class KannelBinding
     }
 
     /**
-     *  Gets the connected attribute of the KannelBinding object
+     * Sets the connectedAtStart attribute of the KannelBinding object
      *
-     *@return    True if the link is up, false otherwise
+     * @param  connectedAtStart  The new connectedAtStart value
+     */
+    public void setConnectedAtStart(boolean connectedAtStart) {
+	this.connectedAtStart = connectedAtStart;
+    }
+    
+    /**
+     * Gets the connectedAtStart attribute of the KannelBinding object
+     *
+     * @return    The connectedAtStart value
+     */
+    public boolean getConnectedAtStart() {
+	return this.connectedAtStart;
+    }
+
+    /**
+     * Sets the bearerBox attribute of the KannelBinding object
+     *
+     * @param  bearerBox  The new bearerBox value
+     */
+    public void setBearerBox(InetAddress bearerBox) {
+	this.bearerBox = bearerBox;
+    }
+    
+    /**
+     * Gets the bearerBox attribute of the KannelBinding object
+     *
+     * @return    The bearerBox value
+     */
+    public InetAddress getBearerBox() {
+	return this.bearerBox;
+    }
+
+    /**
+     * Sets the port attribute of the KannelBinding object
+     *
+     * @param  port  The new port value
+     */
+    public void setPort(int port) {
+	this.port = port;
+    }
+    
+    /**
+     * Gets the port attribute of the KannelBinding object
+     *
+     * @return    The port value
+     */
+    public int getPort() {
+	return this.port;
+    }
+
+    /**
+     * Sets the boxc_id attribute of the KannelBinding object
+     *
+     * @param  boxc_id  The new boxc_id value
+     */
+    public void setBoxc_Id(String boxc_id) {
+	this.boxc_id = boxc_id;
+    }
+    
+    /**
+     * Gets the boxc_id attribute of the KannelBinding object
+     *
+     * @return    The boxc_id value
+     */
+    public String getBoxc_Id() {
+	return this.boxc_id;
+    }
+
+
+    /**
+     * Gets the connected attribute of the KannelBinding object
+     *
+     * @return    True if the link is up, false otherwise
      */
     public boolean isConnected() {
 	return this.kannelSocket.isConnected();
@@ -158,7 +233,7 @@ public class KannelBinding
      * @exception  NotEnoughPropertiesException  Exception thrown when
      * @exception  WrongPropertieException       Exception thrown when
      */
-    public void init(Properties conf) throws NotEnoughPropertiesException, WrongPropertieException {
+    protected void init(Properties conf) throws NotEnoughPropertiesException, WrongPropertieException {
 	// This sets up the configurations
 	String swap = conf.getProperty(this.prop_heartbeat_rate);
 	try {
