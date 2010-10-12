@@ -75,9 +75,8 @@ public class KannelBindingQueue
 	Properties props = new Properties();
 	props.load(new FileInputStream(new File(argv[0])));
 	KannelBindingQueue kbndg = new KannelBindingQueue(props);
-	SMSPacketMessage sms = new SMSPacketMessage("44636", "6508145269", "", "test message");
+ 	SMSPacketMessage sms = new SMSPacketMessage("12345", "6505551212", "", "test message");
 	kbndg.write(sms);
-	//kbndg.writeNext(sms);
     }
 
     private class ReadThread extends Thread

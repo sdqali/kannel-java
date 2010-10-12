@@ -336,30 +336,20 @@ public class KannelBinding
 	Properties props = new Properties();
 
 	props.load(new FileInputStream(new File(args[0])));
-// 	KannelBindingQueue kbndg = new KannelBindingQueue(props);
-// 	SMSPacketMessage sms = new SMSPacketMessage("44636", "6508145269", "", "test message");
-// 	kbndg.writeNext(sms);
-
-// 	props.load(new FileInputStream(
-// 				       new File(
-// 						new String(System.getProperty("user.dir") +
-// 							   System.getProperty("file.separator") +
-// 							   "/properties.txt"))));
-	
  	KannelBinding kbndg = new KannelBinding(props);
  	int i = 0;
  	BasicPacket bPckt;
- 	SMSPacketMessage sms = new SMSPacketMessage("44636", "6508145269", "", "test message");
+ 	SMSPacketMessage sms = new SMSPacketMessage("12345", "6505551212", "", "test message");
  	kbndg.writeNext(sms);
-//  	while (i < 2) {
-//  	    bPckt = kbndg.readNext();
-//  	    if (bPckt != null) {
-//  		System.out.println(bPckt);
-//  		i++;
-// 		Thread.sleep(1000);
-//  		kbndg.writeNext(new AckMessage(0, (SMSPacketMessage) bPckt));
-//  	    }
-//  	}
+  	while (i < 2) {
+  	    bPckt = kbndg.readNext();
+  	    if (bPckt != null) {
+  		System.out.println(bPckt);
+  		i++;
+ 		Thread.sleep(1000);
+  		kbndg.writeNext(new AckMessage(0, (SMSPacketMessage) bPckt));
+  	    }
+  	}
     }
 
 }
