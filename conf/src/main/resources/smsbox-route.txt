@@ -1,0 +1,4 @@
+group (m)	smsbox-route	This is a mandatory variable
+smsbox-id (m)	string	Defines for which smsbox instance the routing rules do apply.
+smsc-id	word-list	If set, specifies from which smsc-ids all inbound messages should be routed to this smsbox instance. List contains smsc-ids separated by semicolon (";"). This rule may be used to pull any smsc specific message stream to an smsbox instance. If used in combination with config directive shortcode, then this is another matching criteria for the routing decission.
+shortcode	number-list	If set, specifies which receiver numbers for inbound messages should be routed to this smsbox instance. List contains numbers separated by semicolon (";"). This rule may be used to pull receiver number specific message streams to an smsbox instance. If used in combination with config directive smsc-id, then only messages originating from the connections in the smsc-id are matched against the shortcode list.

@@ -1,0 +1,28 @@
+group (m)	smsbox	 This is a mandatory variable 
+bearerbox-host (m)	hostname	 The machine in which the bearerbox is.
+bearerbox-port (o)	port-number	 This is the port number to which smsbox will connect bearerbox. If not given smsbox-port from core group used.
+bearerbox-port-ssl (o)	bool	 If set to true, the smsbox connection will be SSL-enabled. Your smsbox will connect using SSL to the bearerbox then. This is used to secure communication between bearerbox and smsboxes in case they are in separate networks operated and the TCP communication is not secured on a lower network layer. If not given smsbox-port-ssl from core group used.
+smsbox-id (o)	   string	 Optional smsbox instance identifier. This is used to identify an smsbox connected to an bearerbox for the purpose of having smsbox specific routing inside bearerbox. So if you you own boxes that do pass messages into bearerbox for delivery you may want that answers to those are routed back to your specific smsbox instance, i.e. SMPP or EMI proxying boxes.
+sendsms-port (c)	port-number	The port in which any sendsms HTTP requests are done. As with other ports in Kannel, can be set as anything desired.
+sendsms-port-ssl (o)	 bool	  If set to true, the sendsms HTTP interface will use a SSL-enabled HTTP server with the specified ssl-server-cert-file and ssl-server-key-file from the core group. Defaults to "no".
+sendsms-url (o)	 url	 URL locating the sendsms service. Defaults to /cgi-bin/sendsms.
+sendota-url (o)	 url	 URL locating the sendota service. Defaults to /cgi-bin/sendota.
+immediate-sendsms-reply (o)	boolean	This is a backward compatibility flag: when set, Kannel will immediately answer to any sendsms requests, without knowing if the bearerbox will ever accept the message. If set to false (default), smsbox will not reply to HTTP request until the bearerbox has received the message.
+sendsms-chars	string	 Only these characters are allowed in 'to' field when send-SMS service is requested via HTTP. Naturally, you should allow at least 0123456789. The space character (' ') has special meaning: it is used to separate multiple phone numbers from each other in multi-send. To disable this feature, do not have it as an accepted character. If this variable is not set, the default set "0123456789 +-" is used.
+global-sender	phone-number	 If set, all sendsms originators are set as these before proceeding. Note that in a case of most SMS centers you cannot set the sender number, but it is automatically set as the number of SMSC
+log-file	filename	 As with the bearerbox 'core' group. Access-log is used to store information about MO and send-sms requests. Can be named same as the 'main' access-log (in 'core' group).
+log-level	number 0..5
+access-log	filename
+white-list	URL	Load a list of accepted destinations of SMS messages. If a destination of an SMS message is not in this list, any message received from the HTTP interface is rejected. See notes of phone number format from numhash.h header file.
+black-list	URL	As white-list, but SMS messages to these numbers are automatically discarded
+reply-couldnotfetch	string	If set, replaces the SMS message sent back to user when Kannel could not fetch content. Defaults to Could not fetch content, sorry..
+reply-couldnotrepresent	string	If set, replaces the SMS message sent back when Kannel could not represent the result as a SMS message. Defaults to Result could not be represented as an SMS message..
+reply-requestfailed	string	If set, replaces the SMS message sent back when Kannel could not contact http service. Defaults to Request Failed.
+reply-emptymessage	string	If set, replaces the SMS message sent back when message is empty. Set to "" to enable empty messages. Defaults to <Empty reply from service provider>.
+mo-recode	boolean	If enabled, Kannel will try to convert received messages with UCS-2 charset to WINDOWS-1252 or to UTF-8, simplifying external servers jobs. If Kannel is able to recode message, it will also change coding to 7 bits and charset to windows-1252 or to utf-8.
+http-request-retry	integer	If set, specifies how many retries should be performed for failing HTTP requests of sms-services. Defaults to 0, which means no retries should be performed and hence no HTTP request queuing is done.
+http-queue-delay	integer	If set, specifies how many seconds should pass within the HTTP queuing thread for retrying a failed HTTP request. Defaults to 10 sec. and is only obeyed if http-request-retry is set to a non-zero value.
+white-list-regex	POSIX regular expression	Defines the set of accepted destinations of SMS messages. If a destination of an SMS message is not in this set, any message received from the HTTP interface is rejected. See section on Regular Expressions for details.
+black-list-regex	POSIX regular expression	As white-list-regex, but SMS messages to numbers within in this set are automatically discarded. See section on Regular Expressions for details.
+max-pending-requests	number of messages	  Maximum number of pending MO or DLR messages that are handled in parallel. (Default: 512)
+http-timeout	seconds	  Sets socket timeout in seconds for outgoing client http connections. Optional. Defaults to 240 seconds.

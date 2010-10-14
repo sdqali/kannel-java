@@ -13,6 +13,7 @@ inputFile.eachLine{ line ->
         mandatory = prop.substring(prop.indexOf(" (")+2, prop.indexOf(" (")+3);
         prop = prop.substring(0, prop.indexOf(" ("));
     }
+
     def type = tokens[1];
     def comment = "";
     if (tokens.length>2) comment = tokens[2];
@@ -23,11 +24,15 @@ inputFile.eachLine{ line ->
         if (tokens.length>3) default1 = tokens[3];
         if (prop.equals("group")) group = prop;
         if (!prop.equals("group")) {
-            gs.append("${writeGetSet(prop, mapType(type), comment)}\n");
-            //props.add(toCamelCase(prop));
-            //if (mandatory.equals("m")) mprops.add(toCamelCase(prop));
-            props.add(prop);
-            if (mandatory.equals("m")) mprops.add(prop);
+            try {
+                gs.append("${writeGetSet(prop, mapType(type), comment)}\n");
+                //props.add(toCamelCase(prop));
+                //if (mandatory.equals("m")) mprops.add(toCamelCase(prop));
+                props.add(prop);
+                if (mandatory.equals("m")) mprops.add(prop);
+            } catch (Exception e) {
+                println "error at ${prop}: ${e.message}";
+            }
         }
         //println prop;
         //println mandatory;
@@ -141,6 +146,7 @@ def mapType(String type)
     if (type.equals("string (url)")) return "URL";
     if (type.equals("xml document")) return "String";
     if (type.equals("hex")) return "String";
+    if (type.equals("posix regular expression")) return "String";
     //    if (type.equals("")) return "";
     //    return "String";
     throw new Exception("unknown type: "+type);

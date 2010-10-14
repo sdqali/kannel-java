@@ -1,0 +1,26 @@
+group (m)	sendsms-user	 This is a mandatory variable
+username (m)	string	 Name for the user/account.
+password (m)	string	 Password for the user (see HTTP interface, below)
+name	 string	As in 'sms-service' groups.
+user-deny-ip	IP-list	    As other deny/allow IP lists, but for this user (i.e. this user is not allowed to do the SMS push HTTP request from other IPs than allowed ones). If not set, there is no limitations.
+user-allow-IP	IP-list
+forced-smsc	string	Force SMSC ID as a 'string' (linked to SMS routing, see 'smsc' groups)
+default-smsc	string	If no SMSC ID is given with the send-sms request (see below), use this one. No idea to use with forced-smsc.
+default-sender	phone-number	This number is set as sender if not set by from get/post parameter
+faked-sender	phone-number	As in 'sms-service' groups
+max-messages	number	       
+concatenation	bool	        
+split-chars	string	 
+split-suffix	string	  
+omit-empty	bool	   
+header	string	    
+footer	string	     
+allowed-prefix	prefix-list	     A list of phone number prefixes which are accepted to be sent using this username. Multiple entries are separated with semicolon (';'). For example, "040;050" prevents sending of any SMS message with prefix of 040 or 050 through this SMSC. If denied-prefix is unset, only this numbers are allowed. If set, number are allowed if present in allowed or not in denied list.
+denied-prefix	prefix-list	     A list of phone number prefixes which are NOT accepted to be sent using this username.
+white-list	URL	     Load a list of accepted destinations of SMS messages. If a destination of an SMS message is not in this list, any message received from the HTTP interface is rejected. See notes of phone number format from numhash.h header file.
+black-list	URL	     As white-list, but SMS messages from these numbers are automatically rejected.
+dlr-url	URL	     URL to be fetched if a dlr-mask CGI parameter is present.
+allowed-prefix-regex	     POSIX regular expression	     A set of phone numbers which are accepted to be sent using this username. See section on Regular Expressions for details.
+denied-prefix-regex	     POSIX regular expression	     A set of phone numbers which may not send using this username. See section on Regular Expressions for details.
+white-list-regex	     POSIX regular expression	     Defines a set of accepted destinations of SMS messages. If a destination of an SMS message is not in this list, any message received from the HTTP interface is rejected. See section on Regular Expressions for details.
+black-list-regex	     POSIX regular expression	     As white-list-regex, but SMS messages originating from a number matching the pattern are discarded. See section on Regular Expressions for details. 

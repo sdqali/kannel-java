@@ -26,20 +26,37 @@ public class ConfigurationFile
     private CoreConfiguration coreConfiguration;
     public CoreConfiguration getCoreConfiguration() { return this.coreConfiguration; }
 
-    private Collection<SmppSmscConfiguration> smppSmscConfigurations;
+    private Collection<SmppSmscConfiguration> smppSmscConfigurations = new HashSet<SmppSmscConfiguration>();
     public Collection<SmppSmscConfiguration> getSmppSmscConfigurations() { return this.smppSmscConfigurations; }
     public void addSmppSmscConfiguration(SmppSmscConfiguration smppSmscConfiguration) {
-	if (smppSmscConfigurations == null) {
-	    smppSmscConfigurations = new HashSet<SmppSmscConfiguration>();
-	}
 	smppSmscConfigurations.add(smppSmscConfiguration);
     }
 
+    private Collection<SmsboxConfiguration> smsboxConfigurations = new HashSet<SmsboxConfiguration>();
+    public Collection<SmsboxConfiguration> getSmsboxConfigurations() { return this.smsboxConfigurations; }
+    public void addSmsboxConfiguration(SmsboxConfiguration smsboxConfiguration) {
+	smsboxConfigurations.add(smsboxConfiguration);
+    }
+
+    private Collection<SmsServiceConfiguration> smsServiceConfigurations = new HashSet<SmsServiceConfiguration>();
+    public Collection<SmsServiceConfiguration> getSmsServiceConfigurations() { return this.smsServiceConfigurations; }
+    public void addSmsServiceConfiguration(SmsServiceConfiguration smsServiceConfiguration) {
+	smsServiceConfigurations.add(smsServiceConfiguration);
+    }
+
+    private Collection<SendsmsUserConfiguration> sendsmsUserConfigurations = new HashSet<SendsmsUserConfiguration>();
+    public Collection<SendsmsUserConfiguration> getSendsmsUserConfigurations() { return this.sendsmsUserConfigurations; }
+    public void addSendsmsUserConfiguration(SendsmsUserConfiguration sendsmsUserConfiguration) {
+	sendsmsUserConfigurations.add(sendsmsUserConfiguration);
+    }
+
+    private Collection<SmsboxRouteConfiguration> smsboxRouteConfigurations = new HashSet<SmsboxRouteConfiguration>();
+    public Collection<SmsboxRouteConfiguration> getSmsboxRouteConfigurations() { return this.smsboxRouteConfigurations; }
+    public void addSmsboxRouteConfiguration(SmsboxRouteConfiguration smsboxRouteConfiguration) {
+	smsboxRouteConfigurations.add(smsboxRouteConfiguration);
+    }
+
     // private WapboxConfiguration wapboxConfiguration;
-    // private SmsboxConfiguration smsboxConfiguration;
-    // private SmsboxRouteConfiguration smsboxRouteConfiguration;
-    // private SmsServiceConfiguration smsServiceConfiguration;
-    // private SendsmsUserConfiguration SendsmsUserConfiguration;
     // private OtaSettingConfiguration otaSettingConfiguration;
     // private OtaBookmarkConfiguration otaBookmarkConfiguration;
     // private PpgConfiguration ppgConfiguration;
@@ -78,9 +95,29 @@ public class ConfigurationFile
 		    coreConfiguration.readConfiguration(br);
 		}
 		if (group.equals("smsc")) {
-		    SmppSmscConfiguration smppSmscConfiguration = new SmppSmscConfiguration();
-		    smppSmscConfiguration.readConfiguration(br);
-		    addSmppSmscConfiguration(smppSmscConfiguration);
+ 		    SmppSmscConfiguration smppSmscConfiguration = new SmppSmscConfiguration();
+ 		    smppSmscConfiguration.readConfiguration(br);
+ 		    addSmppSmscConfiguration(smppSmscConfiguration);
+		}
+		if (group.equals("smsbox")) {
+		    SmsboxConfiguration smsboxConfiguration = new SmsboxConfiguration();
+		    smsboxConfiguration.readConfiguration(br);
+		    addSmsboxConfiguration(smsboxConfiguration);
+		}
+		if (group.equals("sms-service")) {
+		    SmsServiceConfiguration smsServiceConfiguration = new SmsServiceConfiguration();
+		    smsServiceConfiguration.readConfiguration(br);
+		    addSmsServiceConfiguration(smsServiceConfiguration);
+		}
+		if (group.equals("sendsms-user")) {
+		    SendsmsUserConfiguration sendsmsUserConfiguration = new SendsmsUserConfiguration();
+		    sendsmsUserConfiguration.readConfiguration(br);
+		    addSendsmsUserConfiguration(sendsmsUserConfiguration);
+		}
+		if (group.equals("smsbox-route")) {
+		    SmsboxRouteConfiguration smsboxRouteConfiguration = new SmsboxRouteConfiguration();
+		    smsboxRouteConfiguration.readConfiguration(br);
+		    addSmsboxRouteConfiguration(smsboxRouteConfiguration);
 		}
 	    }		  
 	}
@@ -100,12 +137,23 @@ public class ConfigurationFile
 	if (coreConfiguration != null) {
 	    coreConfiguration.writeConfiguration(new String[]{"core"}, fw);
 	}
-	if (smppSmscConfigurations != null) {
-	    for (SmppSmscConfiguration smppSmscConfiguration:smppSmscConfigurations) {
-		smppSmscConfiguration.writeConfiguration(new String[]{"smsc", "smpp"}, fw);
+	writeConfigurations(smppSmscConfigurations, new String[]{"smsc", "smpp"}, fw);
+ 	writeConfigurations(smsboxConfigurations, new String[]{"smsbox", "#"}, fw);
+ 	writeConfigurations(smsServiceConfigurations, new String[]{"sms-service", "#"}, fw);
+ 	writeConfigurations(sendsmsUserConfigurations, new String[]{"sendsms-user", "#"}, fw);
+ 	writeConfigurations(smsboxRouteConfigurations, new String[]{"smsbox-route", "#"}, fw);
+	// more
+	fw.close();
+    }
+
+    private void writeConfigurations(Collection<? extends Configuration> configs, String[] comments, FileWriter fw)
+	throws Exception
+    {
+	if (configs != null && !configs.isEmpty()) {
+	    for (Configuration config:configs) {
+		((Configuration)config).writeConfiguration(comments, fw);
 	    }
 	}
-	fw.close();
     }
 
 }
