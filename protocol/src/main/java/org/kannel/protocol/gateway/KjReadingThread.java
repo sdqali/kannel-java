@@ -83,17 +83,12 @@ public class KjReadingThread
      *  Main processing method for the KjReadingThread object
      */
     public void run() {
-	// wait for packets on a Klink
-	// if message is ack, write gotAck to ack thread
-	// else if message of type sms
-	// Then send them to a JMSTransport
 	BasicPacket recPacket = null;
 	int type = -1;
 	System.out.println("Reading thread started.");
-	while(!halted){
+	while (!halted){
 	    try{
 		recPacket = kbind.read();
-		
 		if (recPacket != null){
 		    type = recPacket.type.getIntValue();
 		    
@@ -105,11 +100,10 @@ public class KjReadingThread
 			onHeartbeat(recPacket);
 		    }else if(type == BasicPacket.SMS_PKT) {
 			onSms(recPacket);
-			//this.jmsTransport.gotMOMessage((SMSPacketMessage)recPacket);
 		    }else if(type == BasicPacket.WDP_PKT) {
 			onWdp(recPacket);
 		    }else{
-			// NOP
+			System.out.println("Unknown packet type: "+type);
 		    }
 		}
 	    } catch(Exception e) {

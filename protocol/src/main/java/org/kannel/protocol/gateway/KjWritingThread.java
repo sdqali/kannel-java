@@ -7,8 +7,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 /**
- * This class redirects to a Kannel link. In order to create a useful implementation, you
- * may override onAck, onAdmin, onHeartbeat, onSms and onWdp.
+ * This class redirects to a Kannel link.
  *
  * @author Oscar Medina Duarte
  * @author Garth Patil <garthpatil@gmail.com>
@@ -40,10 +39,8 @@ public class KjWritingThread
     {
 	try {
 	    if (this.ackAdminThread != null) {
-		//System.out.println("set ack");
 		this.ackAdminThread.waitAck(pack);
 	    }
-	    // System.out.println("write it");
 	    this.kbind.write((BasicKannelProtocolMessage)pack);
 	} catch(Exception e) {
 	    System.out.println("sendind message failed : " + e);
