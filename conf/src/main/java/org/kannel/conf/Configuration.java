@@ -7,6 +7,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -68,19 +69,46 @@ public abstract class Configuration
      */
     public void readConfiguration(BufferedReader br) throws Exception
     {
+ 	String line;
+ 	while ((line = br.readLine()) != null)   {
+ 	    if (line == null || line.trim().equals("")) {
+ 		//blank line means section is done
+ 		return;
+ 	    } else if (line.trim().startsWith("#")) {
+ 		//ignore comments
+ 	    } else if (line.indexOf("=")>0) {
+ 		int pos = line.indexOf("=");
+ 		String n = line.substring(0, pos);
+ 		String v = line.substring(pos+1);
+ 		setProperty(n, v);
+ 	    }		  
+ 	}
+    }
+
+    protected static Map<String,String> readConfigurationToMap(BufferedReader br) throws Exception
+    {
+	Map<String,String> p = new HashMap<String,String>();
 	String line;
 	while ((line = br.readLine()) != null)   {
 	    if (line == null || line.trim().equals("")) {
 		//blank line means section is done
-		return;
+		return p;
 	    } else if (line.trim().startsWith("#")) {
 		//ignore comments
 	    } else if (line.indexOf("=")>0) {
 		int pos = line.indexOf("=");
-		String n = line.substring(0, pos);
-		String v = line.substring(pos+1);
-		setProperty(n, v);
-	    }		  
+		String n = line.substring(0, pos).trim();
+		String v = line.substring(pos+1).trim();
+		p.put(n, v);
+	    }
+	}
+	return p;
+    }
+
+    protected void writeConfigurationFromMap(Map<String,String> conf) throws Exception
+    {
+	for (Map.Entry<String,String> e : conf.entrySet()) {
+	    setProperty(e.getKey(), e.getValue());
 	}
     }
 
@@ -92,11 +120,28 @@ public abstract class Configuration
 	try {
 	    if (name != null) name = name.trim();
 	    Object value = PropertyUtils.getSimpleProperty(this, toCamelCase(name));
-	    if (value != null) return value.toString();
+	    if (value != null) {
+		if (value instanceof Object[]) return arrayToString((Object[])value, ',', true);
+		else return value.toString();
+	    }
 	} catch (Exception ignore) {
 	    logger.error("ERROR get propery ["+name+"]:", ignore);
 	}
 	return null;
+    }
+
+    private String arrayToString(Object[] arr, char delim, boolean quote)
+    {
+	int i = 1;
+	StringBuffer s = new StringBuffer();
+	for (Object o:arr) {
+	    if (quote) s.append("\"");
+	    s.append(o.toString());
+	    if (quote) s.append("\"");
+	    if (i < arr.length) s.append(", ");
+	    i++;
+	}
+	return s.toString();
     }
 
     /**
@@ -108,11 +153,11 @@ public abstract class Configuration
 	try {
 	    if (name != null) name = name.trim();
 	    if (value != null) value = value.trim();
-	    logger.debug("TRY set property ["+name+"] = ["+value+"]");
+	    logger.debug("TRY set property ["+name+"] = ["+value.toString()+"]");
 	    BeanUtils.setProperty(this, toCamelCase(name), value);
-	    logger.debug("SUCCED set property ["+name+"] = ["+getProperty(name)+"]");
+	    logger.debug("SUCCEED set property ["+name+"] = ["+getProperty(name)+"]");
 	} catch (Exception ignore) {
-	    logger.error("ERROR set propery ["+name+"] = ["+value+"]:", ignore);
+	    logger.error("ERROR set propery ["+name+"] = ["+value.toString()+"]:", ignore);
 	}
     }
 

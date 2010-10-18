@@ -1,0 +1,36 @@
+system-type (m)	string	Type of HTTP connection. Currently supported are: 'kannel', 'brunet', 'xidris', 'wapme', 'clickatell' and 'generic'.
+send-url (m)	url	Location to send MT messages. This URL is expanded by used system, if need to.
+no-sender	boolean	Do not add variable sender to the send-url.
+no-coding	boolean	Do not add variable coding to the send-url.
+no-sep	boolean	Represent udh and text as a numeric string containing the hex-dump. For instance, text=%2b123 is represented as text=2b313233.
+port (m)	port-number	Port number in which Kannel listens to (MO) messages from other gateway
+use-ssl	boolean	Defines whether listen port should use SSL.
+connect-allow-ip	IP-list	IPs allowed to use this interface. If not set, "127.0.0.1" (localhost) is the only host allowed to connect.
+smsc-username	string	Username associated to connection, if needed. Kannel requires this, and it is the same as send-sms username at other end.
+smsc-password	string	Password for username, if needed. 
+status-success-regex (o)	 POSIX regular expression	Regular expression to match against HTTP response body content, indicating a successful submission.
+status-permfail-regex (o)	 POSIX regular expression	Regular expression to match against HTTP response body content, indicating a permanent failure.
+status-tempfail-regex (o)	 POSIX regular expression	Regular expression to match against HTTP response body content, indicating a temporary failure.
+generic-foreign-id-regex (o)	 POSIX regular expression	Regular expression to match against HTTP response body content to get the foreign message id in case of successful submission.
+generic-param-username (o)	 string	Overrides the default parameter for the 'username' field used on incoming requests.
+generic-param-password (o)	 string	Overrides the default parameter for the 'password' field used on incoming requests.
+generic-param-from (o)	string	Overrides the default parameter for the 'from' field used on incoming requests.
+generic-param-to (o)	string	Overrides the default parameter for the 'to' field used on incoming requests.
+generic-param-text (o)	string	Overrides the default parameter for the 'text' field used on incoming requests.
+generic-param-udh (o)	string	Overrides the default parameter for the 'udh' field used on incoming requests.
+generic-param-service (o)	string	Overrides the default parameter for the 'service' field used on incoming requests.
+generic-param-account (o)	string	Overrides the default parameter for the 'account' field used on incoming requests.
+generic-param-binfo (o)	string	Overrides the default parameter for the 'binfo' field used on incoming requests.
+generic-param-dlr-mask (o)	string	Overrides the default parameter for the 'dlr-mask' field used on incoming requests.
+generic-param-dlr-url (o)	string	Overrides the default parameter for the 'dlr-url' field used on incoming requests.
+generic-param-dlr-mid (o)	string	Overrides the default parameter for the 'dlr-mid' field used on incoming requests.
+generic-param-flash (o)	string	Overrides the default parameter for the 'flash' field used on incoming requests.
+generic-param-mclass (o)	string	Overrides the default parameter for the 'mclass' field used on incoming requests.
+generic-param-mwi (o)	string	Overrides the default parameter for the 'mwi' field used on incoming requests.
+generic-param-coding (o)	string	Overrides the default parameter for the 'coding' field used on incoming requests.
+generic-param-validity (o)	string	Overrides the default parameter for the 'validity' field used on incoming requests.
+generic-param-deferred (o)	string	Overrides the default parameter for the 'deferred' field used on incoming requests.
+generic-param-foreign-id (o)	string	Overrides the default parameter for the 'foreign-id' field used on incoming requests.
+generic-message-sent (o)	string	It allows you to set the text returned when a succesful request is made. If not set, defaults to 'Sent.'. Note that you can use all sms service escapes here, see Parameters (Escape Codes) for details.
+generic-status-sent (o)	string	Overrides the HTTP status code returned when a successful request is made. If not set, defaults to 202 (HTTP_ACCEPTED).
+generic-status-error (o)	string	Overrides the HTTP status code returned when a request is rejected for any reason. If not set, defaults to 202 (HTTP_ACCEPTED). 

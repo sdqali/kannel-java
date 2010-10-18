@@ -12,18 +12,9 @@ public class App
 
 	ConfigurationFile cf = new ConfigurationFile(new File(argv[0]));
 	cf.load();
-
-// 	CoreConfiguration core = cf.getCoreConfiguration();
-// 	System.out.println(core.getAdminPort());
-
-// 	Collection<SmppSmscConfiguration> smpps = cf.getSmppSmscConfigurations();
-// 	for (SmppSmscConfiguration smpp:smpps) {
-// 	    System.out.println(smpp.getHost());
-// 	    System.out.println(smpp.getEnquireLinkInterval());
-// 	}
-
 	cf.save(new File(argv[1]));
 
+	System.exit(0);
     }
 
 }

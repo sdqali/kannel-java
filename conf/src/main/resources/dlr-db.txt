@@ -1,0 +1,12 @@
+group	dlr-db	 This is a mandatory variable
+id (m)	string	An id to identify which external connection should be used for DLR storage. Any string is acceptable, but semicolon ';' may cause problems, so avoid it and any other special non-alphabet characters.
+table (m)	string	The name of the table that is used to store the DLR information.
+field-smsc (m)	string	The table field that is used for the smsc data.
+field-timestamp (m)	string	The table field that is used for the timestamp data.
+field-destination (m)	string	The table field that is used for the destination number data.
+field-source (m)	string	The table field that is used for the source number data.
+field-service (m)	string	The table field that is used for the service username data.
+field-url (m)	string	The table field that is used for the DLR URL which is triggered when the DLR for this message arrives from the SMSC.
+field-mask (m)	string	The table field that is used for the DLR mask that has been set for a message.
+field-status (m)	string	The table field that is used to reflect the status of the DLR for a specific message.
+field-boxc-id (m)	string	The table field that is used to store the smsbox connection id that has passed the message for delivery. This is required in cases you want to guarantee that DLR messages are routed back to the same smsbox conn instance. This is done via the smsbox routing. If you don't use smsbox routing simply add this field to your database table and keep it empty.

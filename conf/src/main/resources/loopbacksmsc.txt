@@ -1,0 +1,1 @@
+reroute-smsc-id (o)	string	Tag the rerouted MO with the given value for smsc-id instead of the canonical smsc-id value of the smsc group itself. 

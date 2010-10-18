@@ -26,16 +26,22 @@ public class ConfigurationFile
     private CoreConfiguration coreConfiguration;
     public CoreConfiguration getCoreConfiguration() { return this.coreConfiguration; }
 
-    private Collection<SmppSmscConfiguration> smppSmscConfigurations = new HashSet<SmppSmscConfiguration>();
-    public Collection<SmppSmscConfiguration> getSmppSmscConfigurations() { return this.smppSmscConfigurations; }
-    public void addSmppSmscConfiguration(SmppSmscConfiguration smppSmscConfiguration) {
-	smppSmscConfigurations.add(smppSmscConfiguration);
+    private Collection<SmscConfiguration> smscConfigurations = new HashSet<SmscConfiguration>();
+    public Collection<SmscConfiguration> getSmscConfigurations() { return this.smscConfigurations; }
+    public void addSmscConfiguration(SmscConfiguration smscConfiguration) {
+	smscConfigurations.add(smscConfiguration);
     }
 
     private Collection<SmsboxConfiguration> smsboxConfigurations = new HashSet<SmsboxConfiguration>();
     public Collection<SmsboxConfiguration> getSmsboxConfigurations() { return this.smsboxConfigurations; }
     public void addSmsboxConfiguration(SmsboxConfiguration smsboxConfiguration) {
 	smsboxConfigurations.add(smsboxConfiguration);
+    }
+
+    private Collection<WapboxConfiguration> wapboxConfigurations = new HashSet<WapboxConfiguration>();
+    public Collection<WapboxConfiguration> getWapboxConfigurations() { return this.wapboxConfigurations; }
+    public void addWapboxConfiguration(WapboxConfiguration wapboxConfiguration) {
+	wapboxConfigurations.add(wapboxConfiguration);
     }
 
     private Collection<SmsServiceConfiguration> smsServiceConfigurations = new HashSet<SmsServiceConfiguration>();
@@ -56,7 +62,22 @@ public class ConfigurationFile
 	smsboxRouteConfigurations.add(smsboxRouteConfiguration);
     }
 
-    // private WapboxConfiguration wapboxConfiguration;
+    private Collection<DbConnectionConfiguration> dbConnectionConfigurations = new HashSet<DbConnectionConfiguration>();
+    public Collection<DbConnectionConfiguration> getDbConnectionConfigurations() { return this.dbConnectionConfigurations; }
+    public void addDbConnectionConfiguration(DbConnectionConfiguration dbConnectionConfiguration) {
+	dbConnectionConfigurations.add(dbConnectionConfiguration);
+    }
+
+    private Collection<DlrDbConfiguration> dlrDbConfigurations = new HashSet<DlrDbConfiguration>();
+    public Collection<DlrDbConfiguration> getDlrDbConfigurations() { return this.dlrDbConfigurations; }
+    public void addDlrDbConfiguration(DlrDbConfiguration dlrDbConfiguration) {
+	dlrDbConfigurations.add(dlrDbConfiguration);
+    }
+
+    // TODO: Missing types
+    // private CimdSmscConfiguration cimdSmscConfiguration;
+    // private GsmSmscConfiguration GsmSmscConfiguration;
+    // private SemaSmscConfiguration semaSmscConfiguration;
     // private OtaSettingConfiguration otaSettingConfiguration;
     // private OtaBookmarkConfiguration otaBookmarkConfiguration;
     // private PpgConfiguration ppgConfiguration;
@@ -64,12 +85,6 @@ public class ConfigurationFile
     // private RadiusAccountConfiguration radiusAccountConfiguration;
     // private SmppTlvConfiguration SmppTlvConfiguration;
     // private ModemsConfiguration modemsConfiguration;
-    // private MysqlConnectionConfiguration mysqlConnectionConfiguration;
-    // private OracleConnectionConfiguration oracleConnectionConfiguration;
-    // private PgsqlConnectionConfiguration pgsqlConnectionConfiguration;
-    // private MssqlConnectionConfiguration mssqlConnectionConfiguration;
-    // private SdbConnectionConfiguration sdbConnectionConfiguration;
-    // private DlrDbConfiguration dlrDbConfiguration;
 
     public ConfigurationFile(File file)
     {
@@ -86,7 +101,7 @@ public class ConfigurationFile
 	String line;
 	while ((line = br.readLine()) != null)   {
 	    if (line == null || line.trim().equals("") || line.trim().startsWith("#")) {
-		//
+		// ignore comment or break
 	    } else if (line.startsWith("group")) {
 		int pos = line.indexOf("=");
 		String group = line.substring(pos+1).trim();
@@ -95,14 +110,17 @@ public class ConfigurationFile
 		    coreConfiguration.readConfiguration(br);
 		}
 		if (group.equals("smsc")) {
- 		    SmppSmscConfiguration smppSmscConfiguration = new SmppSmscConfiguration();
- 		    smppSmscConfiguration.readConfiguration(br);
- 		    addSmppSmscConfiguration(smppSmscConfiguration);
+		    addSmscConfiguration(SmscConfiguration.getConfigurationInstance(br));
 		}
 		if (group.equals("smsbox")) {
 		    SmsboxConfiguration smsboxConfiguration = new SmsboxConfiguration();
 		    smsboxConfiguration.readConfiguration(br);
 		    addSmsboxConfiguration(smsboxConfiguration);
+		}
+		if (group.equals("wapbox")) {
+		    WapboxConfiguration wapboxConfiguration = new WapboxConfiguration();
+		    wapboxConfiguration.readConfiguration(br);
+		    addWapboxConfiguration(wapboxConfiguration);
 		}
 		if (group.equals("sms-service")) {
 		    SmsServiceConfiguration smsServiceConfiguration = new SmsServiceConfiguration();
@@ -118,6 +136,17 @@ public class ConfigurationFile
 		    SmsboxRouteConfiguration smsboxRouteConfiguration = new SmsboxRouteConfiguration();
 		    smsboxRouteConfiguration.readConfiguration(br);
 		    addSmsboxRouteConfiguration(smsboxRouteConfiguration);
+		}
+		if (group.equals("dlr-db")) {
+		    DlrDbConfiguration dlrDbConfiguration = new DlrDbConfiguration();
+		    dlrDbConfiguration.readConfiguration(br);
+		    addDlrDbConfiguration(dlrDbConfiguration);
+		}
+		if (group.contains("-connection")) {
+		    String[] a = group.split("-");
+		    DbConnectionConfiguration dbConnectionConfiguration = new DbConnectionConfiguration(a[0]);
+		    dbConnectionConfiguration.readConfiguration(br);
+		    addDbConnectionConfiguration(dbConnectionConfiguration);
 		}
 	    }		  
 	}
@@ -137,11 +166,14 @@ public class ConfigurationFile
 	if (coreConfiguration != null) {
 	    coreConfiguration.writeConfiguration(new String[]{"core"}, fw);
 	}
-	writeConfigurations(smppSmscConfigurations, new String[]{"smsc", "smpp"}, fw);
- 	writeConfigurations(smsboxConfigurations, new String[]{"smsbox", "#"}, fw);
- 	writeConfigurations(smsServiceConfigurations, new String[]{"sms-service", "#"}, fw);
- 	writeConfigurations(sendsmsUserConfigurations, new String[]{"sendsms-user", "#"}, fw);
- 	writeConfigurations(smsboxRouteConfigurations, new String[]{"smsbox-route", "#"}, fw);
+	writeConfigurations(smscConfigurations, new String[]{"smsc"}, fw);
+ 	writeConfigurations(smsboxConfigurations, new String[]{"smsbox"}, fw);
+ 	writeConfigurations(wapboxConfigurations, new String[]{"wapbox"}, fw);
+ 	writeConfigurations(smsServiceConfigurations, new String[]{"sms-service"}, fw);
+ 	writeConfigurations(sendsmsUserConfigurations, new String[]{"sendsms-user"}, fw);
+ 	writeConfigurations(smsboxRouteConfigurations, new String[]{"smsbox-route"}, fw);
+ 	writeConfigurations(dlrDbConfigurations, new String[]{"dlr-db"}, fw);
+ 	writeConfigurations(dbConnectionConfigurations, new String[]{"db-connection"}, fw);
 	// more
 	fw.close();
     }

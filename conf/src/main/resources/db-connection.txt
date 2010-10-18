@@ -1,0 +1,9 @@
+group	mysql-connection	 This is a mandatory variable
+id (m)	string	An optional name or id to identify this connection for internal reference with other related configuration groups. Any string is acceptable, but semicolon ';' may cause problems, so avoid it and any other special non-alphabet characters.
+host (m)	hostname or IP	Hostname or IP of a server running a database to connect to.
+server (o)	hostname or IP	Hostname or IP of a server running a database
+username (m)	username	User name for connecting to database.
+password (m)	password	Password for connecting to database.
+database	string	Name of database in database server to connect to.
+tnsname	string	Name of oracle sqlnet configuration 
+max-connections	integer	How many connections should be opened to the given database. This is used for database pool. 

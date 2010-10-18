@@ -1,6 +1,8 @@
 package org.kannel.conf;
 
+import java.io.BufferedReader;
 import java.net.URL;
+import java.util.Map;
 
 /**
  * smsc configuration
@@ -11,7 +13,7 @@ public class SmscConfiguration
     extends Configuration
 {
 
-    public SmscConfiguration()
+    protected SmscConfiguration()
     {
 	super("smsc");
     }
@@ -19,15 +21,39 @@ public class SmscConfiguration
     private static final String[] SMSC_PROP_ORDER = { "smsc","smsc-id","smsc-admin-id","throughput","denied-smsc-id","allowed-smsc-id","preferred-smsc-id","allowed-prefix","denied-prefix","preferred-prefix","unified-prefix","alt-charset","alt-dcs","our-host","log-file","log-level","reconnect-delay","reroute","reroute-smsc-id","reroute-receiver","reroute-dlr","allowed-smsc-id-regex","denied-smsc-id-regex","preferred-smsc-id-regex","allowed-prefix-regex","denied-prefix-regex","preferred-prefix-regex","max-sms-octets","meta-data" };
 
     public String[] getPropertyOrder() {
-	//	return arrayCat(super.getPropertyOrder(), SMSC_PROP_ORDER);
 	return SMSC_PROP_ORDER;
     }
 
     private static final String[] SMSC_MANDATORY_PROPS = { "smsc" };
 
     public String[] getMandatoryProps() {
-	//	return arrayCat(super.getPropertyOrder(), SMSC_MANDATORY_PROPS);
 	return SMSC_MANDATORY_PROPS;
+    }
+
+    public static SmscConfiguration getConfigurationInstance(BufferedReader br) throws Exception
+    {
+	Map<String,String> conf = readConfigurationToMap(br);
+	String type = conf.get("smsc");
+	if (type == null || type.equals("")) throw new Exception("SMSC type not specified.");
+	else if (type.equals("fake")) {
+	    FakeSmscConfiguration fakeSmscConfiguration = new FakeSmscConfiguration();
+	    fakeSmscConfiguration.writeConfigurationFromMap(conf);
+	    return fakeSmscConfiguration;
+	} else if (type.equals("smpp")) {
+	    SmppSmscConfiguration smppSmscConfiguration = new SmppSmscConfiguration();
+	    smppSmscConfiguration.writeConfigurationFromMap(conf);
+	    return smppSmscConfiguration;
+	} else if (type.equals("http")) {
+	    HttpSmscConfiguration httpSmscConfiguration = new HttpSmscConfiguration();
+	    httpSmscConfiguration.writeConfigurationFromMap(conf);
+	    return httpSmscConfiguration;
+	} else if (type.equals("loopback")) {
+	    LoopbackSmscConfiguration loopbackSmscConfiguration = new LoopbackSmscConfiguration();
+	    loopbackSmscConfiguration.writeConfigurationFromMap(conf);
+	    return loopbackSmscConfiguration;
+	} else {
+	    throw new Exception("Unknown SMSC type: "+type);
+	}
     }
 
     /**

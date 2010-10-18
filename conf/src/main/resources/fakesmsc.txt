@@ -1,0 +1,3 @@
+host (m)	hostname	Machine that runs the SMSC. As IP (100.100.100.100) or hostname (their.machine.here)
+port (m)	port-number	Port number in smsc host machine
+connect-allow-ip	IP-list	If set, only connections from these IP addresses are accepted. 
