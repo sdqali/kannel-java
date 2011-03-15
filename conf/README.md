@@ -1,4 +1,4 @@
-# kannel-java-sms #
+# kannel-java-conf #
 
 Beans and loaders for the Kannel configuration file: <http://kannel.org/download/kannel-userguide-snapshot/userguide.html>. This package gives you a mechanism to programmatically read and write Kannel configuration files, and creates beans for each configuration type. Warning: not all configuration "group"s are supported at this time, and Kannel's "include" functionality doesn't work. Most of the configuration bean code is generated using a Groovy script in src/main/resources/genConfig.groovy using a cleaned up version of the Kannel documentation in src/main/resources/*.txt.
 

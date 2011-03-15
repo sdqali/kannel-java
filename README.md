@@ -5,9 +5,9 @@ Java libraries for building applications with the Kannel open source SMS gateway
 ## Libraries: ##
 - admin: A wrapper on the HTTP administration service exposed by Kannel.
 - conf: Reading and writing the Kannel configuration file.
-- protocol: The Kannel "box" protocol for building event-driven applications to interact with the bearerbox. (The protocol library was built originally by Oscar Medina Duarte for his graduate thesis project. This project is forked from that one. Original sources can be found on his website <http://www.medina-web.com/kjGateway/index.html>). Currently, the "box" protocol is compatible only with the 1.5.0 development release of Kannel.
-- runtime: A utility for starting/stopping the box daemons from Java.
-- sms: Wrappers for sending and receiving messages to and from the smsbox HTTP interface, including marshalling and unmarshalling XML used by Kannel for the post-xml version of the sms-service.
+- protocol: The Kannel "box" protocol for building event-driven applications to interact with the "bearerbox". (The protocol library was built originally by Oscar Medina Duarte for his graduate thesis project. This project is forked from that one. Original sources can be found on his website <http://www.medina-web.com/kjGateway/index.html>).
+- runtime: A utility for starting/stopping the "box" daemons from Java.
+- sms: Wrappers for sending and receiving messages to and from the "smsbox" HTTP interface, including marshalling and unmarshalling XML used by Kannel for the post-xml version of the sms-service.
 
 ## Dependencies: ##
 - <http://xmlbeans.apache.org/> - Apache XMLBeans for XML reading and writing.
