@@ -55,51 +55,60 @@ public class SmsServlet extends KannelServlet
     {
 	try {
 	    Submit s = MessageDocument.Factory.parse(is).getMessage().getSubmit();
-	    
 	    Sms sms = new Sms();
-
-//   <submit>
-//       <da><number>destination number (to)</number></da>
-//       <oa><number>originating number (from)</number></oa>
-//       <ud>user data (text)</ud>
-//       <udh>user data header (udh)</udh>
-//     <meta-data>meta-data</meta-data>
-//     <dcs>
-//       <mclass>mclass</mclass>
-//       <coding>coding</coding>
-//       <mwi>mwi</mwi>
-//       <compress>compress</compress>
-//       <alt-dcs>alt-dcs</alt-dcs>
-//     </dcs>
-//     <pid>pid</pid>
-//     <rpi>rpi</rpi>
-//     <vp>
-//       <delay>validity time in minutes</delay>
-//     </vp>
-//     <timing>
-//       <delay>deferred time in minutes</delay>
-//     </timing>
-//     <statusrequest>
-//       <dlr-mask>dlr-mask</dlr-mask>
-//       <dlr-url>dlr-url</dlr-url>
-//     </statusrequest>
-
-//     <!-- request from application to Kannel -->
-//     <from>
-//       <user>username</user>
-//       <username>username</username> 
-//       <pass>password</pass>
-//       <password>password</password>
-//       <account>account</account>
-//     </from>
-//     <to>smsc-id</to>
-
-//     <!-- request from Kannel to application -->
-//     <from>smsc-id</from>
-//     <to>service-name</to>
-
-//   </submit>
-
+	    //   <submit>
+	    //       <da><number>destination number (to)</number></da>
+	    sms.setTo(s.getDa().getNumber());
+	    //       <oa><number>originating number (from)</number></oa>
+	    sms.setFrom(s.getOa().getNumber());
+	    //       <ud>user data (text)</ud>
+	    sms.setText(s.getUd());
+	    //       <udh>user data header (udh)</udh>
+	    sms.setUdh(s.getUdh().getBytes()); //TODO: test this is correct
+	    //     <meta-data>meta-data</meta-data>
+	    //     <dcs>
+	    //       <mclass>mclass</mclass>
+	    sms.setMclass(s.getDcs().getMclass());
+	    //       <coding>coding</coding>
+	    sms.setCoding(s.getDcs().getCoding());
+	    //       <mwi>mwi</mwi>
+	    sms.setMwi(s.getDcs().getMwi());
+	    //       <compress>compress</compress>
+	    sms.setCompress(s.getDcs().getCompress());
+	    //       <alt-dcs>alt-dcs</alt-dcs>
+	    sms.setAltDcs(s.getDcs().getAltDcs());
+	    //     </dcs>
+	    //     <pid>pid</pid>
+	    sms.setPid((new Integer(s.getPid()).byteValue()));
+	    //     <rpi>rpi</rpi>
+	    sms.setRpi(s.getRpi());
+	    //     <vp>
+	    //       <delay>validity time in minutes</delay>
+	    sms.setValidity(s.getVp().getDelay());
+	    //     </vp>
+	    //     <timing>
+	    //       <delay>deferred time in minutes</delay>
+	    sms.setDeferred(s.getTiming().getDelay());
+	    //     </timing>
+	    //     <!-- request from application to Kannel -->
+	    //     <statusrequest>
+	    //       <dlr-mask>dlr-mask</dlr-mask>
+	    //       <dlr-url>dlr-url</dlr-url>
+	    //     </statusrequest>
+	    //     <from>
+	    //       <user>username</user>
+	    //       <username>username</username> 
+	    //       <pass>password</pass>
+	    //       <password>password</password>
+	    //       <account>account</account>
+	    //     </from>
+	    //     <to>smsc-id</to>
+	    //     <!-- request from Kannel to application -->
+	    //     <from>smsc-id</from>
+	    sms.setSmsc(s.getFrom().toString()); //TODO: this may be incorrect
+	    //     <to>service-name</to>
+	    sms.setService(s.getTo());
+	    //   </submit>
 	    return sms;
 	} catch (Exception e) {
 	    throw new IOException(e);
